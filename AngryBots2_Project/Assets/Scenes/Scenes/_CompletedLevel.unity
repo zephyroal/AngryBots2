@@ -17134,11 +17134,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ScoreCanvas
       objectReference: {fileID: 0}
-    - target: {fileID: 223033240865750960, guid: 22d993276ac624cf3b444113a4d9e19a,
-        type: 3}
-      propertyPath: m_AdditionalShaderChannelsFlag
-      value: 25
-      objectReference: {fileID: 0}
     - target: {fileID: 224251966095788458, guid: 22d993276ac624cf3b444113a4d9e19a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -17237,63 +17232,6 @@ PrefabInstance:
     - target: {fileID: 224251966095788458, guid: 22d993276ac624cf3b444113a4d9e19a,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5444365779920529418, guid: 22d993276ac624cf3b444113a4d9e19a,
-        type: 3}
-      propertyPath: m_text
-      value: score:60
-      objectReference: {fileID: 0}
-    - target: {fileID: 5444365779920529418, guid: 22d993276ac624cf3b444113a4d9e19a,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 32.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 5444365779920529418, guid: 22d993276ac624cf3b444113a4d9e19a,
-        type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 8b6ce97b0ae71f74985af014bf8b87cd,
-        type: 2}
-    - target: {fileID: 5444365779920529418, guid: 22d993276ac624cf3b444113a4d9e19a,
-        type: 3}
-      propertyPath: m_fontStyle
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5444365779920529418, guid: 22d993276ac624cf3b444113a4d9e19a,
-        type: 3}
-      propertyPath: m_fontColor.b
-      value: 0.8858356
-      objectReference: {fileID: 0}
-    - target: {fileID: 5444365779920529418, guid: 22d993276ac624cf3b444113a4d9e19a,
-        type: 3}
-      propertyPath: m_fontColor.g
-      value: 0.9622642
-      objectReference: {fileID: 0}
-    - target: {fileID: 5444365779920529418, guid: 22d993276ac624cf3b444113a4d9e19a,
-        type: 3}
-      propertyPath: m_fontColor.r
-      value: 0.8139907
-      objectReference: {fileID: 0}
-    - target: {fileID: 5444365779920529418, guid: 22d993276ac624cf3b444113a4d9e19a,
-        type: 3}
-      propertyPath: m_sharedMaterial
-      value: 
-      objectReference: {fileID: 21011060197223782, guid: 8b6ce97b0ae71f74985af014bf8b87cd,
-        type: 2}
-    - target: {fileID: 5444365779920529418, guid: 22d993276ac624cf3b444113a4d9e19a,
-        type: 3}
-      propertyPath: m_enableAutoSizing
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5444365779920529418, guid: 22d993276ac624cf3b444113a4d9e19a,
-        type: 3}
-      propertyPath: m_fontColor32.rgba
-      value: 4293064144
-      objectReference: {fileID: 0}
-    - target: {fileID: 5444365779920529418, guid: 22d993276ac624cf3b444113a4d9e19a,
-        type: 3}
-      propertyPath: m_hasFontAssetChanged
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
