@@ -42,7 +42,7 @@ public class EnemyChaseMovement : MonoBehaviour {
 
 			if(Physics.Raycast(lineOfSightOrigin.position, raycastDirectionTowardsPlayer, out lineOfSightHit, 100f))
 			{
-				if(lineOfSightHit.collider.CompareTag("Player"))
+				//if(lineOfSightHit.collider.CompareTag("Player"))
 				{
 					BeginChasingPlayer();
 				}
