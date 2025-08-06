@@ -47,7 +47,12 @@ public class EnemyPatrol : MonoBehaviour
     
     void Update()
     {
-        if (!isPatrolling || isSleeping || chaseMovement.chasingPlayer)
+        // 即使在巡逻状态下，也要允许追逐行为
+        if (!isPatrolling || isSleeping)
+            return;
+            
+        // 如果正在追逐玩家，则不执行巡逻逻辑
+        if (chaseMovement.chasingPlayer)
             return;
             
         // 检查是否到达当前巡逻点
@@ -206,7 +211,7 @@ public class EnemyPatrol : MonoBehaviour
             
         // 设置动画状态
         if (animator != null)
-            animator.SetBool("Chase Player", false);
+            animator.SetBool("Chase Player", true);
     }
     
     // 当停止追逐玩家时，返回原始巡逻点并继续巡逻
