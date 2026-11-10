@@ -834,6 +834,7 @@ GameObject:
   - component: {fileID: 7072476005170078763}
   - component: {fileID: 1778935527393099405}
   - component: {fileID: 989177493915991440}
+  - component: {fileID: 3437500449035779244}
   m_Layer: 0
   m_Name: EnemySpider_Prefab
   m_TagString: Enemy
@@ -873,7 +874,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   agent: {fileID: 1778935527393099405}
+  chasingPlayer: 0
   lineOfSightOrigin: {fileID: 3068700193383683998}
+  patrolBehaviour: {fileID: 0}
   animator: {fileID: 8447737136073182561}
 --- !u!65 &7072476005170078763
 BoxCollider:
@@ -934,6 +937,23 @@ MonoBehaviour:
   pointToGive: 10
   explosionPrefab: {fileID: 1136779506371174, guid: 627f197f886142346baeb51038b68647,
     type: 3}
+--- !u!114 &3437500449035779244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4992132205002506527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fd25824b01620241b36942b6a9e13d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
+  attackRange: 2.2
+  attackInterval: 1.3
+  attackWindup: 0.25
+  player: {fileID: 0}
 --- !u!1 &5028236997714144722
 GameObject:
   m_ObjectHideFlags: 0

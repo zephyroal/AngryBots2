@@ -1,162 +1,53 @@
-// Upgrade NOTE: commented out 'half4 unity_LightmapST', a built-in variable
-// Upgrade NOTE: commented out 'sampler2D unity_Lightmap', a built-in variable
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-// Upgrade NOTE: replaced tex2D unity_Lightmap with UNITY_SAMPLE_TEX2D
+// URP port: 原 AngryBots/PlanarRealtimeReflection
+Shader "AngryBots/PlanarRealtimeReflection"
+{
+    Properties
+    {
+        _MainTex ("Base", 2D) = "white" {}
+        _ReflectionTex ("Internal reflection", 2D) = "black" {}
+        _CubeReflTex ("Cube", CUBE) = "black" {}
+        _Normals ("Normal", 2D) = "bump" {}
+    }
 
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" "Queue"="Geometry" }
 
-/* 
+        Pass
+        {
+            Name "ForwardLit"
+            Tags { "LightMode"="UniversalForward" }
 
-(realtime & planar) reflection shader.
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma target 3.0
+            #include "../ABLegacyUrpCommon.hlsl"
 
-handles simple planar (y is up) bump displacement of planar reflections.
+            TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
+            TEXTURE2D(_ReflectionTex); SAMPLER(sampler_ReflectionTex);
+            TEXTURECUBE(_CubeReflTex); SAMPLER(sampler_CubeReflTex);
+            CBUFFER_START(UnityPerMaterial)
+                float4 _MainTex_ST;
+            CBUFFER_END
 
-*/
+            ABVaryings vert(ABAttributes v)
+            {
+                ABVaryings o = ABVert(v);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                return o;
+            }
 
-Shader "AngryBots/PlanarRealtimeReflection" {
-	Properties {
-		_MainTex ("Base", 2D) = "white" {}
-		_ReflectionTex ("Internal reflection", 2D) = "black" {}
-		_CubeReflTex ("Cube", CUBE) = "black" {}
-		_Normals ("Normal", 2D) = "bump" {}
-	}
-	
-	CGINCLUDE
-
-		#include "UnityCG.cginc"
-
-		sampler2D _MainTex;
-		sampler2D _ReflectionTex;
-		sampler2D _Normals;
-		samplerCUBE _CubeReflTex;
-		
-		struct v2f {
-			half4 pos : SV_POSITION;
-			half2 uv : TEXCOORD0;	
-			half4 scr : TEXCOORD1;	
-			half2 uvLM : TEXCOORD2;
-		};
-
-		struct v2f_full {
-			half4 pos : SV_POSITION;
-			half2 uv : TEXCOORD0;	
-			half4 scr : TEXCOORD1;	
-			half3 tsBase0 : TEXCOORD2;
-			half3 tsBase1 : TEXCOORD3;
-			half3 tsBase2 : TEXCOORD4;	
-			half3 viewDir : TEXCOORD5;
-			half2 uvLM : TEXCOORD6;
-		};
-	
-	ENDCG
-
-	SubShader {
-		LOD 400
-
-		Tags { "RenderType"="Opaque" }
-		Fog { Mode Off }
-
-		Pass {
-			
-		CGPROGRAM
-		
-		#include "AngryInclude.cginc"
-		
-		uniform half4 _MainTex_ST;
-		// half4 unity_LightmapST;	
-		// sampler2D unity_Lightmap;		
-		
-		v2f_full vert(appdata_full v)
-		{
-			v2f_full o;
-			
-			o.pos = UnityObjectToClipPos (v.vertex);	
-			
-			o.uv.xy = TRANSFORM_TEX(v.texcoord.xy, _MainTex);
-			
-			o.scr = ComputeScreenPos(o.pos);
-			
-			o.uvLM = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-			
-			WriteTangentSpaceData(v, o.tsBase0,o.tsBase1,o.tsBase2);	
-			o.viewDir = normalize(WorldSpaceViewDir(v.vertex));					
-			
-			return o; 
-		}
-		
-		half4 frag( v2f_full i ) : COLOR
-		{	
-			half3 normals = UnpackNormal(tex2D(_Normals, i.uv.xy));
-			half3 bumpedNormal = half3(dot(i.tsBase0,normals), dot(i.tsBase1,normals), dot(i.tsBase2,normals));			
-			
-			half3 reflectVector = reflect(-i.viewDir.xyz, bumpedNormal.xyz);
-			
-			half4 color = tex2D(_MainTex, i.uv);
-			i.scr = i.scr/i.scr.w;
-
-			fixed3 lm = DecodeLightmap (UNITY_SAMPLE_TEX2D(unity_Lightmap, i.uvLM.xy));
-			color.rgb *= lm;
-				
-			i.scr.xy += normals.xy;
-			return color + tex2D(_ReflectionTex, i.scr.xy) + texCUBE(_CubeReflTex, reflectVector) * 0.1;
-		}		
-		
-		#pragma vertex vert
-		#pragma fragment frag
-		#pragma fragmentoption ARB_precision_hint_fastest 
-				
-		ENDCG
-		 
-		}		
-	}
-	
-	SubShader {
-		LOD 200
-
-		Tags { "RenderType"="Opaque" }
-		Fog { Mode Off }
-
-		Pass {
-						
-		CGPROGRAM
-		
-		uniform half4 _MainTex_ST;
-		// half4 unity_LightmapST;	
-		// sampler2D unity_Lightmap;		
-		
-		v2f vert(appdata_full v)
-		{
-			v2f o;
-			
-			o.pos = UnityObjectToClipPos (v.vertex);	
-			
-			o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
-			o.uvLM = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-
-			o.scr = ComputeScreenPos(o.pos);
-			
-			return o; 
-		}
-		
-		fixed4 frag( v2f i ) : COLOR
-		{	
-			fixed4 color = tex2D(_MainTex, i.uv);
-			
-			fixed3 lm = DecodeLightmap(UNITY_SAMPLE_TEX2D(unity_Lightmap, i.uvLM));
-			color.rgb *= lm;
-
-			half2 screen = (i.scr.xy / i.scr.w);
-						
-			return color + tex2D(_ReflectionTex, screen) * color.a;
-		}		
-		
-		#pragma vertex vert
-		#pragma fragment frag
-		#pragma fragmentoption ARB_precision_hint_fastest 
-				
-		ENDCG
-		 
-		}		
-	} 
-	
-	FallBack "AngryBots/Fallback"
+            half4 frag(ABVaryings i) : SV_Target
+            {
+                half3 albedo = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv).rgb;
+                float2 screenUV = i.positionCS.xy / _ScreenParams.xy;
+                float3 planar = SAMPLE_TEXTURE2D(_ReflectionTex, sampler_ReflectionTex, screenUV).rgb;
+                float3 cube = SAMPLE_TEXTURECUBE_LOD(_CubeReflTex, sampler_CubeReflTex, ABReflectionDir(i.normalWS, i.positionWS), 0).rgb;
+                return half4(ABShade(albedo, i.normalWS, planar * 0.7 + cube * 0.3), 1.0);
+            }
+            ENDHLSL
+        }
+    }
+    FallBack "Universal Render Pipeline/Lit"
 }

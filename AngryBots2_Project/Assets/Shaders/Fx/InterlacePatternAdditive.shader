@@ -1,74 +1,61 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-
-Shader "Self-Illumin/AngryBots/InterlacePatternAdditive" {
-	Properties {
+// URP port: 原 Self-Illumin/AngryBots/InterlacePatternAdditive
+Shader "Self-Illumin/AngryBots/InterlacePatternAdditive"
+{
+    Properties
+    {
         _MainTex ("Base", 2D) = "white" {}
-        _TintColor ("TintColor", Color) = (1,1,1,1) // needed simply for shader replacement   
+        _TintColor ("TintColor", Color) = (1,1,1,1)
         _InterlacePattern ("InterlacePattern", 2D) = "white" {}
         _Illum ("_Illum", 2D) = "white" {}
-		_EmissionLM ("Emission (Lightmapper)", Float) = 1.0	
-		_Alpha("Alpha", Range(0, 1)) = 0.5
-	}
-	
-	CGINCLUDE
+        _EmissionLM ("Emission (Lightmapper)", Float) = 1.0
+        _Alpha ("Alpha", Range(0, 1)) = 0.5
+    }
 
-		#include "UnityCG.cginc"
+    SubShader
+    {
+        Tags { "RenderType"="Transparent" "Queue"="Transparent" }
+        Blend SrcAlpha One
+        ZWrite Off
+        Cull Off
 
-		sampler2D _MainTex;
-		sampler2D _InterlacePattern;
-						
-		half4 _InterlacePattern_ST;
-		fixed4 _TintColor;
+        Pass
+        {
+            Name "ForwardUnlit"
+            Tags { "LightMode"="UniversalForward" }
 
-		fixed _Alpha;				
-						
-		struct v2f {
-			half4 pos : SV_POSITION;
-			half2 uv : TEXCOORD0;
-			half2 uv2 : TEXCOORD1;
-		};
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma target 3.0
+            #include "../ABLegacyUrpCommon.hlsl"
 
-		v2f vert(appdata_full v)
-		{
-			v2f o;
-			
-			o.pos = UnityObjectToClipPos (v.vertex);	
-			o.uv.xy = v.texcoord.xy;
-			o.uv2.xy = TRANSFORM_TEX(v.texcoord.xy, _InterlacePattern) + _Time.xx * _InterlacePattern_ST.zw;
-					
-			return o; 
-		}
-		
-		fixed4 frag( v2f i ) : COLOR
-		{	
-			fixed4 colorTex = tex2D (_MainTex, i.uv) * _TintColor;
-			fixed4 interlace = tex2D (_InterlacePattern, i.uv2);
-			colorTex *= interlace;
-			
-			return colorTex * _Alpha;
-		}
-	
-	ENDCG
-	
-	SubShader {
-    	Tags {"RenderType" = "Transparent" "Queue" = "Transparent" "Reflection" = "RenderReflectionTransparentAdd" }
-		Cull Off
-		ZWrite Off
-       	Blend One One
-		
-	Pass {
-	
-		CGPROGRAM
-		
-		#pragma vertex vert
-		#pragma fragment frag
-		#pragma fragmentoption ARB_precision_hint_fastest 
-		
-		ENDCG
-		 
-		}
-				
-	} 
-	FallBack Off
+            TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
+            TEXTURE2D(_InterlacePattern); SAMPLER(sampler_InterlacePattern);
+            TEXTURE2D(_Illum); SAMPLER(sampler_Illum);
+            CBUFFER_START(UnityPerMaterial)
+                float4 _MainTex_ST;
+                half4 _TintColor;
+                half _EmissionLM;
+                half _Alpha;
+            CBUFFER_END
+
+            ABVaryings vert(ABAttributes v)
+            {
+                ABVaryings o = ABVert(v);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                return o;
+            }
+
+            half4 frag(ABVaryings i) : SV_Target
+            {
+                half3 base = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv).rgb;
+                half3 pattern = SAMPLE_TEXTURE2D(_InterlacePattern, sampler_InterlacePattern, i.uv).rgb;
+                half3 illum = SAMPLE_TEXTURE2D(_Illum, sampler_Illum, i.uv).rgb;
+                half3 color = base * _TintColor.rgb * (pattern + illum * _EmissionLM);
+                return half4(color, _Alpha);
+            }
+            ENDHLSL
+        }
+    }
+    FallBack "Universal Render Pipeline/Unlit"
 }

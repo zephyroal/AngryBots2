@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8417a7c0a0d734180acea51e6e2e4e, type: 3}
+  m_Name: CampaignConfig
+  m_EditorClassIdentifier: 
+  missions:
+  - {fileID: 11400000, guid: 9efa85ce6bde6574ab2bd8dd342999b6, type: 2}
+  - {fileID: 11400000, guid: 479305a85eeaba342ab60ac536503b90, type: 2}
+  - {fileID: 11400000, guid: c17fdba5b11455e449a6eccc1368ca35, type: 2}
+  - {fileID: 11400000, guid: 0d1fb1a0c018ad149b915fc2cdcc8e72, type: 2}
+  - {fileID: 11400000, guid: 16122e3f8201d8d4aac806f556d127b3, type: 2}
+  playerPrefab: {fileID: 8783445679152717701, guid: bfe5fb299aa28b6469d665745ad07a23,
+    type: 3}
+  fallbackEnemyPrefab: {fileID: 4992132205002506527, guid: 22cf8734e217e44d484edb735346d258,
+    type: 3}
+  enemyTable: {fileID: 11400000, guid: 1d37da058e1c71a44a20bf67892bc273, type: 2}

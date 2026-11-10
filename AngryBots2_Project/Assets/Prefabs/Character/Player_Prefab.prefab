@@ -1451,6 +1451,8 @@ GameObject:
   - component: {fileID: 8321999423073571386}
   - component: {fileID: 6442409367849627818}
   - component: {fileID: 5927821213216251404}
+  - component: {fileID: 8939560624645117861}
+  - component: {fileID: 4757597373391694102}
   m_Layer: 10
   m_Name: Player_Prefab
   m_TagString: Player
@@ -1564,6 +1566,54 @@ MonoBehaviour:
   playerRigidbody: {fileID: 7607468950699994340}
   speed: 4.5
   playerAnimator: {fileID: 6442409367849627818}
+--- !u!114 &8939560624645117861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8783445679152717701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae0c7329367edff4abc5871b7454c74c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  invulnerabilityTime: 0.7
+--- !u!114 &4757597373391694102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8783445679152717701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4efa1a1c4a8d2b14aac1aca31c4b78ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 1218724716591446, guid: c4b4b81382c254a999d09f9375fbe2c7,
+    type: 3}
+  spawnPoint: {fileID: 4246027773061886382}
+  muzzleParticles: {fileID: 7070899025543208387}
+  fireAudio: {fileID: 860069947254954118}
+  grenadePrefab: {fileID: 3270727669755924756, guid: 709954c02a1afab4d9ccb29ab6dfc9d4,
+    type: 3}
+  rifleInterval: 0.12
+  rifleMagSize: 30
+  rifleReloadTime: 1.3
+  rifleDamage: 25
+  rifleSpread: 0.7
+  shotgunInterval: 0.85
+  shotgunMagSize: 8
+  shotgunReloadTime: 2
+  shotgunDamage: 12
+  shotgunPellets: 8
+  shotgunSpread: 7
+  grenadeCharges: 3
+  maxGrenadeCharges: 5
+  grenadeCooldown: 1.5
+  grenadeThrowForce: 14
 --- !u!1 &9005729997836109285
 GameObject:
   m_ObjectHideFlags: 0
@@ -1638,6 +1688,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3618007590814561783, guid: 251ba36db94af1a4d8769d99ec10e075,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3618007590814561783, guid: 251ba36db94af1a4d8769d99ec10e075,
         type: 3}
@@ -1771,6 +1826,12 @@ PrefabInstance:
 --- !u!82 &860069947254954118 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 8991881959269951917, guid: 251ba36db94af1a4d8769d99ec10e075,
+    type: 3}
+  m_PrefabInstance: {fileID: 8585549805472297259}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4246027773061886382 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5605551947811799173, guid: 251ba36db94af1a4d8769d99ec10e075,
     type: 3}
   m_PrefabInstance: {fileID: 8585549805472297259}
   m_PrefabAsset: {fileID: 0}

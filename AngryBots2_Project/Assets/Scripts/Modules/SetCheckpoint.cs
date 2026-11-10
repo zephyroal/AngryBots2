@@ -8,7 +8,7 @@ public partial class SetCheckpoint : MonoBehaviour
     public virtual void OnTriggerEnter(Collider other)
     {
         SpawnAtCheckpoint checkpointKeeper = other.GetComponent<SpawnAtCheckpoint>() as SpawnAtCheckpoint;
-        checkpointKeeper.checkpoint = this.spawnTransform;
+        if (checkpointKeeper != null) checkpointKeeper.checkpoint = this.spawnTransform;
     }
 
 }

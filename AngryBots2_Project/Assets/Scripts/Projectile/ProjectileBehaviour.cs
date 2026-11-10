@@ -5,6 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class ProjectileBehaviour : MonoBehaviour {
 
+	/// <summary>命中敌人时触发，参数为命中点。HUD 用来做命中标记。</summary>
+	public static event System.Action<Vector3> EnemyHit;
+
 	[Header("Movement")]
 	public float speed;
 	private Rigidbody projectileRigidbody;
@@ -41,6 +44,8 @@ public class ProjectileBehaviour : MonoBehaviour {
 			{
 				theCollider.GetComponent<EnemyHealth>().RemoveHealth(damageToEnemy);	
 			}
+
+			if (EnemyHit != null) EnemyHit(transform.position);
 
 			Instantiate(hitEnemyParticles, transform.position, transform.rotation);
 			RemoveProjectile();

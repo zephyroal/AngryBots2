@@ -1,120 +1,56 @@
-// Upgrade NOTE: commented out 'float4 unity_LightmapST', a built-in variable
-// Upgrade NOTE: commented out 'sampler2D unity_Lightmap', a built-in variable
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-// Upgrade NOTE: replaced tex2D unity_Lightmap with UNITY_SAMPLE_TEX2D
-
-
-// cutout shader that falls back to cheap non alpha testing shader on low end platforms
-
-Shader "AngryBots/AlphaCutoutCheapFallback" {
-	
-Properties {
-	_MainTex ("Base (RGB)", 2D) = "white" {}
-	_Normal("Normal", 2D) = "bump" {}
-	_Cube("Cube", CUBE) = "black" {}
-	_Color ("Unused main color for depth texture pickup", Color) = (1,1,1,1)	
-	_Cutoff ("Alpha cutoff", Range(0,1)) = 0.25
-}
-
-
-CGINCLUDE		
-
-struct v2f 
+// URP port: 原 AngryBots/AlphaCutoutCheapFallback
+Shader "AngryBots/AlphaCutoutCheapFallback"
 {
-	half4 pos : SV_POSITION;
-	half4 uv : TEXCOORD0;
-};
+    Properties
+    {
+        _MainTex ("Base (RGB)", 2D) = "white" {}
+        _Normal ("Normal", 2D) = "bump" {}
+        _Cube ("Cube", CUBE) = "black" {}
+        _Color ("Unused main color for depth texture pickup", Color) = (1,1,1,1)
+        _Cutoff ("Alpha cutoff", Range(0,1)) = 0.25
+    }
 
-struct v2f_full
-{
-	half4 pos : SV_POSITION;
-	half4 uv : TEXCOORD0;
-	half3 tsBase0 : TEXCOORD2;
-	half3 tsBase1 : TEXCOORD3;
-	half3 tsBase2 : TEXCOORD4;	
-	half3 viewDir : TEXCOORD5;
-};
-	
-#include "UnityCG.cginc"		
+    SubShader
+    {
+        Tags { "RenderType"="TransparentCutout" "Queue"="AlphaTest" }
 
-sampler2D _MainTex;
-sampler2D _Normal;		
-samplerCUBE _Cube;
+        Pass
+        {
+            Name "ForwardLit"
+            Tags { "LightMode"="UniversalForward" }
+            Cull Off
 
-fixed _Cutoff;
-						
-ENDCG 
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma target 3.0
+            #include "../ABLegacyUrpCommon.hlsl"
 
-// tangent space forward rendering shader (HQ versions)
+            TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
+            TEXTURECUBE(_Cube); SAMPLER(sampler_Cube);
+            CBUFFER_START(UnityPerMaterial)
+                float4 _MainTex_ST;
+                half4 _Color;
+                half _Cutoff;
+            CBUFFER_END
 
-SubShader {	
-	Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout"}
-	LOD 300 
-	
-	Pass {
-		CGPROGRAM
-		
-		#include "AngryInclude.cginc"
-		
-		// float4 unity_LightmapST;
-		// sampler2D unity_Lightmap;	
-		float4 _MainTex_ST;
-				
-		v2f_full vert (appdata_full v) 
-		{
-			v2f_full o;
-			
-			o.pos = UnityObjectToClipPos (v.vertex);
-			o.uv.xy = TRANSFORM_TEX(v.texcoord, _MainTex);
-			
-			#ifdef LIGHTMAP_ON
-				o.uv.zw = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-			#else
-				o.uv.zw = half2(0,0);
-			#endif
-			
-			o.viewDir = normalize(WorldSpaceViewDir(v.vertex));
-			
-			WriteTangentSpaceData(v, o.tsBase0,o.tsBase1,o.tsBase2);
-				
-			return o; 
-		}
-				
-		
-		fixed4 frag (v2f_full i) : COLOR0 
-		{
-			fixed4 tex = tex2D (_MainTex, i.uv.xy);			
-			clip (tex.a - _Cutoff);
-						
-			half3 nrml = UnpackNormal(tex2D(_Normal, i.uv.xy));
-			half3 bumpedNormal = (half3(dot(i.tsBase0,nrml), dot(i.tsBase1,nrml), dot(i.tsBase2,nrml)));
-			
-			half3 reflectVector = reflect(-i.viewDir.xyz, bumpedNormal.xyz);
-			fixed4 reflection = texCUBE (_Cube, reflectVector);
-			
-			tex.rgb += reflection.rgb * tex.a;
-												
-			#ifdef LIGHTMAP_ON
-				fixed3 lm =  DecodeLightmap (UNITY_SAMPLE_TEX2D(unity_Lightmap, i.uv.zw));
-				tex.rgb *= lm;
-			#else
-				tex.rgb *= 0.5;
-			#endif	
-									
-			return tex;
-			
-		}		
-		
-		#pragma vertex vert
-		#pragma fragment frag
-		#pragma multi_compile LIGHTMAP_OFF LIGHTMAP_ON
-		#pragma fragmentoption ARB_precision_hint_fastest 
-	
-		ENDCG
-	}
-	UsePass "Legacy Shaders/VertexLit/SHADOWCASTER"
-}  
+            ABVaryings vert(ABAttributes v)
+            {
+                ABVaryings o = ABVert(v);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                return o;
+            }
 
-FallBack "AngryBots/Fallback"
+            half4 frag(ABVaryings i) : SV_Target
+            {
+                half4 tex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+                clip(tex.a - _Cutoff);
+                float3 refl = SAMPLE_TEXTURECUBE_LOD(_Cube, sampler_Cube, ABReflectionDir(i.normalWS, i.positionWS), 0).rgb * 0.25;
+                float3 color = ABShade(tex.rgb * _Color.rgb, i.normalWS, refl * tex.a);
+                return half4(color, 1.0);
+            }
+            ENDHLSL
+        }
+    }
+    FallBack "Universal Render Pipeline/Lit"
 }
-

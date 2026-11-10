@@ -1,172 +1,58 @@
-// Upgrade NOTE: commented out 'float4 unity_LightmapST', a built-in variable
-// Upgrade NOTE: commented out 'sampler2D unity_Lightmap', a built-in variable
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-// Upgrade NOTE: replaced tex2D unity_Lightmap with UNITY_SAMPLE_TEX2D
-
-
-
-Shader "AngryBots/RealtimeReflectionInWaterFlow" {
-	
-Properties {
-	_MainTex ("Base", 2D) = "white" {}
-	_Normal("Normal", 2D) = "bump" {}
-	_ReflectionTex("_ReflectionTex", 2D) = "black" {}
-	_FakeReflect("Fake reflection", 2D) = "black" {}
-	_DirectionUv("Wet scroll direction (2 samples)", Vector) = (1.0,1.0, -0.2,-0.2)
-	_TexAtlasTiling("Tex atlas tiling", Vector) = (8.0,8.0, 4.0,4.0)	
-}
-
-CGINCLUDE		
-
-struct v2f_full
+// URP port: 原 AngryBots/RealtimeReflectionInWaterFlow
+Shader "AngryBots/RealtimeReflectionInWaterFlow"
 {
-	half4 pos : SV_POSITION;
-	half2 uv : TEXCOORD0;
-	half4 normalScrollUv : TEXCOORD1;	
-	half4 screen : TEXCOORD2;
-	half2 fakeRefl : TEXCOORD3;
-	#ifdef LIGHTMAP_ON
-		half2 uvLM : TEXCOORD4;
-	#endif	
-};
-	
-#include "AngryInclude.cginc"		
+    Properties
+    {
+        _MainTex ("Base", 2D) = "white" {}
+        _Normal ("Normal", 2D) = "bump" {}
+        _ReflectionTex ("_ReflectionTex", 2D) = "black" {}
+        _FakeReflect ("Fake reflection", 2D) = "black" {}
+        _DirectionUv ("Wet scroll direction (2 samples)", Vector) = (1.0,1.0, -0.2,-0.2)
+        _TexAtlasTiling ("Tex atlas tiling", Vector) = (8.0,8.0, 4.0,4.0)
+    }
 
-half4 _DirectionUv;
-half4 _TexAtlasTiling;
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" "Queue"="Geometry" }
 
-sampler2D _MainTex;
-sampler2D _Normal;		
-sampler2D _ReflectionTex;
-sampler2D _FakeReflect;
-			
-ENDCG 
+        Pass
+        {
+            Name "ForwardLit"
+            Tags { "LightMode"="UniversalForward" }
 
-SubShader {
-	Tags { "RenderType"="Opaque" }
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma target 3.0
+            #include "../ABLegacyUrpCommon.hlsl"
 
-	LOD 300 
+            TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
+            TEXTURE2D(_ReflectionTex); SAMPLER(sampler_ReflectionTex);
+            TEXTURE2D(_FakeReflect); SAMPLER(sampler_FakeReflect);
+            CBUFFER_START(UnityPerMaterial)
+                float4 _MainTex_ST;
+                float4 _DirectionUv;
+                float4 _TexAtlasTiling;
+            CBUFFER_END
 
-	Pass {
-		CGPROGRAM
-		
-		float4 _MainTex_ST;
-		// float4 unity_LightmapST;	
-		// sampler2D unity_Lightmap;
-		
-		v2f_full vert (appdata_full v) 
-		{
-			v2f_full o;
-			o.pos = UnityObjectToClipPos (v.vertex);
-			o.uv.xy = TRANSFORM_TEX(v.texcoord,_MainTex);
-			
-			#ifdef LIGHTMAP_ON
-				o.uvLM = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-			#endif
-			
-			o.normalScrollUv.xyzw = v.texcoord.xyxy * _TexAtlasTiling + _Time.xxxx * _DirectionUv;
-						
-			o.fakeRefl = EthansFakeReflection(v.vertex);
-			o.screen = ComputeScreenPos(o.pos);
-				
-			return o; 
-		}
-				
-		fixed4 frag (v2f_full i) : COLOR0 
-		{
-			half3 nrml = UnpackNormal(tex2D(_Normal, i.normalScrollUv.xy));
-			nrml += UnpackNormal(tex2D(_Normal, i.normalScrollUv.zw));
-			
-			nrml.xy *= 0.025;
-										
-			fixed4 rtRefl = tex2D (_ReflectionTex, (i.screen.xy / i.screen.w) + nrml.xy);
-			rtRefl += tex2D (_FakeReflect, i.fakeRefl + nrml.xy * 2.0);
-						
-			fixed4 tex = tex2D (_MainTex, i.uv.xy + nrml.xy * 0.05);
-		
-			#ifdef LIGHTMAP_ON
-				fixed3 lm = ( DecodeLightmap (UNITY_SAMPLE_TEX2D(unity_Lightmap, i.uvLM)));
-				tex.rgb *= lm;
-			#endif	
-			
-			tex  = tex + tex.a * rtRefl;
-			
-			return tex;	
-		}	
-		
-		#pragma vertex vert
-		#pragma fragment frag
-		#pragma multi_compile LIGHTMAP_OFF LIGHTMAP_ON
-		#pragma fragmentoption ARB_precision_hint_fastest 
-	
-		ENDCG
-	}
-} 
+            ABVaryings vert(ABAttributes v)
+            {
+                ABVaryings o = ABVert(v);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                return o;
+            }
 
-
-SubShader {
-	Tags { "RenderType"="Opaque" }
-
-	LOD 200 
-
-	Pass {
-		CGPROGRAM
-		
-		float4 _MainTex_ST;
-		// float4 unity_LightmapST;	
-		// sampler2D unity_Lightmap;
-		
-		v2f_full vert (appdata_full v) 
-		{
-			v2f_full o;
-			o.pos = UnityObjectToClipPos (v.vertex);
-			o.uv = TRANSFORM_TEX(v.texcoord,_MainTex);
-			
-			#ifdef LIGHTMAP_ON
-				o.uvLM = v.texcoord1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-			#endif
-			
-			o.normalScrollUv.xyzw = v.texcoord.xyxy * _TexAtlasTiling + _Time.xxxx * _DirectionUv;
-						
-			o.fakeRefl = EthansFakeReflection(v.vertex);
-			o.screen = ComputeScreenPos(o.pos);
-				
-			return o; 
-		}
-				
-		fixed4 frag (v2f_full i) : COLOR0 
-		{
-			// assuming this is on mobile, so no texture unpacking needed
-			
-			fixed4 nrml = tex2D(_Normal, i.normalScrollUv.xy);
-			nrml = (nrml - 0.5) * 0.1;
-										
-			fixed4 rtRefl = tex2D (_ReflectionTex, (i.screen.xy / i.screen.w) + nrml.xy);
-			
-			// needed optimization for now
-			//rtRefl += tex2D (_FakeReflect, i.fakeRefl + nrml.xy);
-						
-			fixed4 tex = tex2D (_MainTex, i.uv);
-		
-			#ifdef LIGHTMAP_ON
-				fixed3 lm = ( DecodeLightmap (UNITY_SAMPLE_TEX2D(unity_Lightmap, i.uvLM)));
-				tex.rgb *= lm;
-			#endif	
-			
-			tex  = tex + tex.a * rtRefl;
-			
-			return tex;	
-		}	
-		
-		#pragma vertex vert
-		#pragma fragment frag
-		#pragma multi_compile LIGHTMAP_OFF LIGHTMAP_ON
-		#pragma fragmentoption ARB_precision_hint_fastest 
-	
-		ENDCG
-	}
-	UsePass "Legacy Shaders/VertexLit/SHADOWCASTER"
-} 
-
-FallBack "AngryBots/Fallback"
+            half4 frag(ABVaryings i) : SV_Target
+            {
+                float2 flow = _Time.y * _DirectionUv.xy * 0.05;
+                half3 albedo = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv + flow).rgb;
+                float2 screenUV = i.positionCS.xy / _ScreenParams.xy;
+                float2 distortion = SAMPLE_TEXTURE2D(_FakeReflect, sampler_FakeReflect, i.uv * _TexAtlasTiling.xy + flow).rg - 0.5;
+                float3 refl = SAMPLE_TEXTURE2D(_ReflectionTex, sampler_ReflectionTex, screenUV + distortion * 0.02).rgb;
+                return half4(ABShade(albedo, i.normalWS, refl * 0.55), 1.0);
+            }
+            ENDHLSL
+        }
+    }
+    FallBack "Universal Render Pipeline/Lit"
 }

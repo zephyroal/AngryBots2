@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 184d5ff65662480cb31a497bd8cd01d7, type: 3}
+  m_Name: EnemySpawnTable_Campaign
+  m_EditorClassIdentifier: 
+  composition:
+  - definition: {fileID: 11400000, guid: 02677179807e3a644b83d2db0f04462b, type: 2}
+    weight: 3
+    minWave: 1
+    maxWave: 0
+  - definition: {fileID: 11400000, guid: 85814ee30f0a22c4ea05832952250306, type: 2}
+    weight: 2
+    minWave: 2
+    maxWave: 0
+  - definition: {fileID: 11400000, guid: 4268752101e86c74e9f9f39adc9fc314, type: 2}
+    weight: 1.5
+    minWave: 2
+    maxWave: 0
+  - definition: {fileID: 11400000, guid: 7f62fa92298068a47a171e9592e0d1bd, type: 2}
+    weight: 1
+    minWave: 3
+    maxWave: 0
+  totalWaves: 6
+  bossEveryNWaves: 3
+  bossDefinition: {fileID: 11400000, guid: 3bbdb17f82abab541bc2c498a16d7297, type: 2}
+  waveTimeLimit: 120
+  waveDelay: 4
+  spawnInterval: 0.5
+  firstWaveDelay: 2
+  healthGrowthPerWave: 0.1
+  damageGrowthPerWave: 0.05
+  speedGrowthPerWave: 0.02
+  maxSpeedScale: 1.5
+  grenadeRefillPerWave: 1
+  healPerWave: 15
+  spawnProtectionTime: 1.5
