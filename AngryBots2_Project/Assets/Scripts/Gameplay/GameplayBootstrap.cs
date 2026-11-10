@@ -216,6 +216,12 @@ public sealed class GameplayBootstrap : MonoBehaviour
 		destination.shotgunPellets = source.shotgunPellets;
 		destination.shotgunSpread = source.shotgunSpread;
 
+		destination.smgInterval = source.smgInterval;
+		destination.smgMagSize = source.smgMagSize;
+		destination.smgReloadTime = source.smgReloadTime;
+		destination.smgDamage = source.smgDamage;
+		destination.smgSpread = source.smgSpread;
+
 		destination.grenadeCharges = source.grenadeCharges;
 		destination.maxGrenadeCharges = source.maxGrenadeCharges;
 		destination.grenadeCooldown = source.grenadeCooldown;

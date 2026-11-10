@@ -20,6 +20,8 @@ namespace ABGameplay.Campaign
 		Text currencyText;
 		Text statusText;
 		Text hintText;
+		string baseHint;
+		float hintOverrideUntil;
 
 		GameObject pausePanel;
 		GameObject shopPanel;
@@ -118,7 +120,8 @@ namespace ABGameplay.Campaign
 			hintText.color = new Color(0.75f, 0.85f, 0.9f);
 			UiFactory.Anchor(hint.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f),
 				new Vector2(0f, 26f), new Vector2(1200f, 40f));
-			hintText.text = "[ESC] PAUSE   [1/2] WEAPON   [R] RELOAD   [RMB] GRENADE";
+			hintText.text = "[ESC] PAUSE   [1/2/3] WEAPON   [R] RELOAD   [RMB] GRENADE";
+			baseHint = hintText.text;
 
 			BuildPause();
 			BuildShop();
@@ -303,10 +306,23 @@ namespace ABGameplay.Campaign
 				else TogglePause();
 			}
 
+			if (hintOverrideUntil > 0f && Time.unscaledTime >= hintOverrideUntil)
+			{
+				hintOverrideUntil = 0f;
+				if (hintText != null) hintText.text = baseHint;
+			}
+
 			refreshTimer -= Time.deltaTime;
-			if (refreshTimer > 0f) return;
-			refreshTimer = 0.2f;
+			if (refreshTimer > 0f) return;			refreshTimer = 0.2f;
 			RefreshStatus();
+		}
+
+		/// <summary>在 HUD 底部临时显示一条提示（连击奖励 / 波次提示等）。</summary>
+		public void ShowHint(string text, float seconds = 1.5f)
+		{
+			if (hintText == null) return;
+			hintText.text = text;
+			hintOverrideUntil = Time.unscaledTime + Mathf.Max(0.2f, seconds);
 		}
 
 		void RefreshStatus()

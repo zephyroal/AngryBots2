@@ -21,6 +21,7 @@ public sealed class WeaponSystemAdapter : WeaponSystem
 
 	static readonly System.Reflection.PropertyInfo RifleAmmoProperty = FindAmmoProperty("RifleAmmo");
 	static readonly System.Reflection.PropertyInfo ShotgunAmmoProperty = FindAmmoProperty("ShotgunAmmo");
+	static readonly System.Reflection.PropertyInfo SmgAmmoProperty = FindAmmoProperty("SmgAmmo");
 	static readonly System.Reflection.MethodInfo RaiseAmmoChangedMethod = typeof(WeaponSystem).GetMethod(
 		"RaiseAmmoChanged",
 		System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
@@ -38,26 +39,35 @@ public sealed class WeaponSystemAdapter : WeaponSystem
 		{
 			int rifleMissing = Mathf.Max(0, rifleMagSize - RifleAmmo);
 			int shotgunMissing = Mathf.Max(0, shotgunMagSize - ShotgunAmmo);
+			int smgMissing = Mathf.Max(0, smgMagSize - SmgAmmo);
 
-			int rifleAdd = Mathf.Min(rifleMissing, Mathf.CeilToInt(amount * 0.5f));
-			int shotgunAdd = Mathf.Min(shotgunMissing, Mathf.Max(0, amount - rifleAdd));
-			if (rifleAdd + shotgunAdd == 0) return 0;
+			int rifleAdd = Mathf.Min(rifleMissing, Mathf.CeilToInt(amount / 3f));
+			int shotgunAdd = Mathf.Min(shotgunMissing, Mathf.CeilToInt(amount / 3f));
+			int smgAdd = Mathf.Min(smgMissing, Mathf.Max(0, amount - rifleAdd - shotgunAdd));
+			if (rifleAdd + shotgunAdd + smgAdd == 0) return 0;
 
-			WriteAmmo(RifleAmmo + rifleAdd, ShotgunAmmo + shotgunAdd);
-			added = rifleAdd + shotgunAdd;
+			WriteAmmo(RifleAmmo + rifleAdd, ShotgunAmmo + shotgunAdd, SmgAmmo + smgAdd);
+			added = rifleAdd + shotgunAdd + smgAdd;
 		}
 		else if (Mode == WeaponMode.Rifle)
 		{
 			int add = Mathf.Min(Mathf.Max(0, rifleMagSize - RifleAmmo), amount);
 			if (add == 0) return 0;
-			WriteAmmo(RifleAmmo + add, ShotgunAmmo);
+			WriteAmmo(RifleAmmo + add, ShotgunAmmo, SmgAmmo);
+			added = add;
+		}
+		else if (Mode == WeaponMode.Shotgun)
+		{
+			int add = Mathf.Min(Mathf.Max(0, shotgunMagSize - ShotgunAmmo), amount);
+			if (add == 0) return 0;
+			WriteAmmo(RifleAmmo, ShotgunAmmo + add, SmgAmmo);
 			added = add;
 		}
 		else
 		{
-			int add = Mathf.Min(Mathf.Max(0, shotgunMagSize - ShotgunAmmo), amount);
+			int add = Mathf.Min(Mathf.Max(0, smgMagSize - SmgAmmo), amount);
 			if (add == 0) return 0;
-			WriteAmmo(RifleAmmo, ShotgunAmmo + add);
+			WriteAmmo(RifleAmmo, ShotgunAmmo, SmgAmmo + add);
 			added = add;
 		}
 
@@ -68,7 +78,7 @@ public sealed class WeaponSystemAdapter : WeaponSystem
 	/// <summary>把两种武器都补满，并把手雷补到上限。</summary>
 	public void RefillAll()
 	{
-		WriteAmmo(rifleMagSize, shotgunMagSize);
+		WriteAmmo(rifleMagSize, shotgunMagSize, smgMagSize);
 		AddGrenades(maxGrenadeCharges);
 		NotifyAmmoChanged();
 	}
@@ -79,16 +89,20 @@ public sealed class WeaponSystemAdapter : WeaponSystem
 		get { return Mathf.Max(0, CurrentMagSize - CurrentMag); }
 	}
 
-	void WriteAmmo(int rifle, int shotgun)
+	void WriteAmmo(int rifle, int shotgun, int smg)
 	{
 		int clampedRifle = Mathf.Clamp(rifle, 0, rifleMagSize);
 		int clampedShotgun = Mathf.Clamp(shotgun, 0, shotgunMagSize);
+		int clampedSmg = Mathf.Clamp(smg, 0, smgMagSize);
 
 		if (RifleAmmoProperty != null && RifleAmmoProperty.CanWrite) RifleAmmoProperty.SetValue(this, clampedRifle);
 		else Debug.LogWarning("[WeaponSystemAdapter] 无法写入 RifleAmmo（反射失败）");
 
 		if (ShotgunAmmoProperty != null && ShotgunAmmoProperty.CanWrite) ShotgunAmmoProperty.SetValue(this, clampedShotgun);
 		else Debug.LogWarning("[WeaponSystemAdapter] 无法写入 ShotgunAmmo（反射失败）");
+
+		if (SmgAmmoProperty != null && SmgAmmoProperty.CanWrite) SmgAmmoProperty.SetValue(this, clampedSmg);
+		else Debug.LogWarning("[WeaponSystemAdapter] 无法写入 SmgAmmo（反射失败）");
 	}
 
 	void NotifyAmmoChanged()

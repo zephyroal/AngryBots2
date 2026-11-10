@@ -183,7 +183,9 @@ public class GameHud : MonoBehaviour
 
 		string ammo = weapons.Mode == WeaponSystem.WeaponMode.Rifle
 			? weapons.RifleAmmo + " / " + weapons.rifleMagSize
-			: weapons.ShotgunAmmo + " / " + weapons.shotgunMagSize;
+			: (weapons.Mode == WeaponSystem.WeaponMode.Shotgun
+				? weapons.ShotgunAmmo + " / " + weapons.shotgunMagSize
+				: weapons.SmgAmmo + " / " + weapons.smgMagSize);
 
 		ammoText.text = (weapons.Reloading ? "RELOADING...  " : "") +
 			"AMMO  " + ammo +

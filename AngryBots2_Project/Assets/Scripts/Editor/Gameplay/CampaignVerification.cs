@@ -47,6 +47,7 @@ namespace ABGameplay
             VerifySave();
             VerifyScore();
             VerifyUpgrades();
+            VerifySmgAndRewards();
             VerifyMissions();
             VerifyContentConfig();
             VerifyBuildSettings();
@@ -178,6 +179,44 @@ namespace ABGameplay
             UnityEngine.Object.DestroyImmediate(player);
             UnityEngine.Object.DestroyImmediate(scoreGo);
             UnityEngine.Object.DestroyImmediate(upgradeGo);
+            SaveSystem.ReplaceInMemory(new SaveData());
+        }
+
+        static void VerifySmgAndRewards()
+        {
+            SaveSystem.ReplaceInMemory(new SaveData());
+
+            var player = new GameObject("[VerifySmgPlayer]");
+            player.tag = "Player";
+            var weapons = player.AddComponent<WeaponSystem>();
+            var health = player.AddComponent<PlayerHealth>();
+            health.maxHealth = 100;
+
+            weapons.SwitchTo(WeaponSystem.WeaponMode.SMG);
+            Check(weapons.Mode == WeaponSystem.WeaponMode.SMG, "可切换到 SMG（第 3 把武器）");
+            Check(weapons.CurrentMagSize == weapons.smgMagSize, "SMG 弹匣容量正确（" + weapons.CurrentMagSize + "）");
+
+            int before = weapons.SmgAmmo;
+            weapons.TryFire(false);
+            Check(weapons.SmgAmmo == before - 1, "SMG 开火消耗弹药（" + before + " → " + weapons.SmgAmmo + "）");
+
+            health.TakeDamage(30);
+            int damaged = health.CurrentHealth;
+            Check(damaged < health.maxHealth, "测试玩家已受伤（" + damaged + "）");
+
+            var rewardObject = new GameObject("[VerifyComboReward]");
+            var reward = rewardObject.AddComponent<ComboReward>();
+            int grenadesBefore = weapons.Grenades;
+            reward.HandleCombo(5);
+
+            Check(health.CurrentHealth > damaged, "连击里程碑回复生命（" + damaged + " → " + health.CurrentHealth + "）");
+            Check(weapons.Grenades >= grenadesBefore, "连击里程碑补充手雷（" + grenadesBefore + " → " + weapons.Grenades + "）");
+
+            var eliteField = typeof(ABGameplay.Enemies.WaveDirectorEx).GetField("eliteChance");
+            Check(eliteField != null, "WaveDirectorEx 暴露精英概率参数");
+
+            UnityEngine.Object.DestroyImmediate(player);
+            UnityEngine.Object.DestroyImmediate(rewardObject);
             SaveSystem.ReplaceInMemory(new SaveData());
         }
 

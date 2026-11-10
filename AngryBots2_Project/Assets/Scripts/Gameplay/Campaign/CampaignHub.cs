@@ -42,6 +42,7 @@ namespace ABGameplay.Campaign
 			CampaignManager.EnsureInstance();
 			ScoreSystem.EnsureInstance();
 			UpgradeSystem.EnsureInstance();
+			ComboReward.EnsureInstance();
 
 			if (mission != null)
 			{

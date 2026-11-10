@@ -9,7 +9,7 @@ using UnityEngine;
 /// </summary>
 public class WeaponSystem : MonoBehaviour
 {
-	public enum WeaponMode { Rifle = 0, Shotgun = 1 }
+	public enum WeaponMode { Rifle = 0, Shotgun = 1, SMG = 2 }
 
 	[Header("Shared References")]
 	public GameObject projectilePrefab;
@@ -33,6 +33,13 @@ public class WeaponSystem : MonoBehaviour
 	public int shotgunPellets = 8;
 	public float shotgunSpread = 7f;
 
+	[Header("SMG")]
+	public float smgInterval = 0.07f;
+	public int smgMagSize = 40;
+	public float smgReloadTime = 1.5f;
+	public int smgDamage = 9;
+	public float smgSpread = 1.2f;
+
 	[Header("Grenade")]
 	public int grenadeCharges = 3;
 	public int maxGrenadeCharges = 5;
@@ -42,11 +49,46 @@ public class WeaponSystem : MonoBehaviour
 	public WeaponMode Mode { get; private set; }
 	public int RifleAmmo { get; private set; }
 	public int ShotgunAmmo { get; private set; }
+	public int SmgAmmo { get; private set; }
 	public int Grenades { get; private set; }
 	public bool Reloading { get; private set; }
-	public string ModeName { get { return Mode == WeaponMode.Rifle ? "RIFLE" : "SHOTGUN"; } }
-	public int CurrentMag { get { return Mode == WeaponMode.Rifle ? RifleAmmo : ShotgunAmmo; } }
-	public int CurrentMagSize { get { return Mode == WeaponMode.Rifle ? rifleMagSize : shotgunMagSize; } }
+	public string ModeName
+	{
+		get
+		{
+			switch (Mode)
+			{
+				case WeaponMode.Rifle: return "RIFLE";
+				case WeaponMode.Shotgun: return "SHOTGUN";
+				default: return "SMG";
+			}
+		}
+	}
+	public int CurrentMag
+	{
+		get
+		{
+			EnsureAmmoInitialized();
+			switch (Mode)
+			{
+				case WeaponMode.Rifle: return RifleAmmo;
+				case WeaponMode.Shotgun: return ShotgunAmmo;
+				default: return SmgAmmo;
+			}
+		}
+	}
+	public int CurrentMagSize
+	{
+		get
+		{
+			switch (Mode)
+			{
+				case WeaponMode.Rifle: return rifleMagSize;
+				case WeaponMode.Shotgun: return shotgunMagSize;
+				default: return smgMagSize;
+			}
+		}
+	}
 
 	/// <summary>弹药、模式、手雷数量变化时触发，HUD 据此刷新。</summary>
 	public event Action AmmoChanged;
@@ -57,9 +99,7 @@ public class WeaponSystem : MonoBehaviour
 
 	void Awake()
 	{
-		RifleAmmo = rifleMagSize;
-		ShotgunAmmo = shotgunMagSize;
-		Grenades = grenadeCharges;
+		EnsureAmmoInitialized();
 		playerHealth = GetComponent<PlayerHealth>();
 
 		// 预制体里的引用若没接上，回退到原 PlayerProjectileSpawner（枪械子物体）。
@@ -84,6 +124,19 @@ public class WeaponSystem : MonoBehaviour
 		}
 	}
 
+	bool ammoInitialized;
+
+	/// <summary>弹药 / 手雷惰性初始化：Edit 模式自检或运行时动态挂载时也不会是 0。</summary>
+	void EnsureAmmoInitialized()
+	{
+		if (ammoInitialized) return;
+		ammoInitialized = true;
+		RifleAmmo = rifleMagSize;
+		ShotgunAmmo = shotgunMagSize;
+		SmgAmmo = smgMagSize;
+		Grenades = grenadeCharges;
+	}
+
 	void Start()
 	{
 		RaiseAmmoChanged();
@@ -95,6 +148,7 @@ public class WeaponSystem : MonoBehaviour
 
 		if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchTo(WeaponMode.Rifle);
 		if (Input.GetKeyDown(KeyCode.Alpha2)) SwitchTo(WeaponMode.Shotgun);
+		if (Input.GetKeyDown(KeyCode.Alpha3)) SwitchTo(WeaponMode.SMG);
 
 		if (Input.GetKeyDown(KeyCode.R)) StartReload();
 
@@ -104,6 +158,7 @@ public class WeaponSystem : MonoBehaviour
 
 	public void SwitchTo(WeaponMode mode)
 	{
+		EnsureAmmoInitialized();
 		if (Mode == mode) return;
 		Mode = mode;
 		Reloading = false;
@@ -112,6 +167,7 @@ public class WeaponSystem : MonoBehaviour
 
 	public void TryFire(bool force)
 	{
+		EnsureAmmoInitialized();
 		if (Reloading || Time.time < nextFireTime) return;
 
 		int magSize = CurrentMagSize;
@@ -127,11 +183,17 @@ public class WeaponSystem : MonoBehaviour
 			nextFireTime = Time.time + rifleInterval;
 			SpawnProjectile(rifleDamage, rifleSpread, 1);
 		}
-		else
+		else if (Mode == WeaponMode.Shotgun)
 		{
 			ShotgunAmmo--;
 			nextFireTime = Time.time + shotgunInterval;
 			SpawnProjectile(shotgunDamage, shotgunSpread, shotgunPellets);
+		}
+		else
+		{
+			SmgAmmo--;
+			nextFireTime = Time.time + smgInterval;
+			SpawnProjectile(smgDamage, smgSpread, 1);
 		}
 
 		if (muzzleParticles != null) muzzleParticles.Play();
@@ -143,10 +205,11 @@ public class WeaponSystem : MonoBehaviour
 
 	public void StartReload()
 	{
+		EnsureAmmoInitialized();
 		if (Reloading) return;
 
 		int magSize = CurrentMagSize;
-		bool full = Mode == WeaponMode.Rifle ? RifleAmmo >= magSize : ShotgunAmmo >= magSize;
+		bool full = CurrentMag >= magSize;
 		if (full) return;
 
 		StartCoroutine(ReloadRoutine());
@@ -156,10 +219,14 @@ public class WeaponSystem : MonoBehaviour
 	{
 		Reloading = true;
 		RaiseAmmoChanged();
-		yield return new WaitForSeconds(Mode == WeaponMode.Rifle ? rifleReloadTime : shotgunReloadTime);
+
+		float reloadTime = Mode == WeaponMode.Rifle ? rifleReloadTime
+			: (Mode == WeaponMode.Shotgun ? shotgunReloadTime : smgReloadTime);
+		yield return new WaitForSeconds(reloadTime);
 
 		if (Mode == WeaponMode.Rifle) RifleAmmo = rifleMagSize;
-		else ShotgunAmmo = shotgunMagSize;
+		else if (Mode == WeaponMode.Shotgun) ShotgunAmmo = shotgunMagSize;
+		else SmgAmmo = smgMagSize;
 
 		Reloading = false;
 		RaiseAmmoChanged();
@@ -167,6 +234,7 @@ public class WeaponSystem : MonoBehaviour
 
 	public void ThrowGrenade()
 	{
+		EnsureAmmoInitialized();
 		if (Grenades <= 0 || grenadePrefab == null) return;
 		if (Time.time < nextGrenadeTime) return;
 
@@ -184,6 +252,7 @@ public class WeaponSystem : MonoBehaviour
 
 	public void AddGrenades(int amount)
 	{
+		EnsureAmmoInitialized();
 		Grenades = Mathf.Clamp(Grenades + amount, 0, maxGrenadeCharges);
 		RaiseAmmoChanged();
 	}

@@ -44,6 +44,18 @@ namespace ABGameplay.Enemies
 		[Tooltip("与玩家的最小生成距离，避免贴脸刷怪。")]
 		public float minDistanceFromPlayer = 8f;
 
+		[Header("Elite Modifiers")]
+		[Tooltip("精英敌人的出现概率（Boss 不吃此规则）。")]
+		[Range(0f, 1f)] public float eliteChance = 0.15f;
+
+		[Tooltip("从第几波开始出现精英。")]
+		public int eliteMinWave = 3;
+
+		public float eliteHealthScale = 1.6f;
+		public float eliteSpeedScale = 1.2f;
+		public float eliteScoreScale = 2f;
+		public float eliteSizeScale = 1.12f;
+
 		[Header("Mission")]
 		[Tooltip("自动开始第一波。")]
 		public bool autoStart = true;
@@ -351,6 +363,9 @@ namespace ABGameplay.Enemies
 
 			PrepareSpawnedEnemy(instance, definition, currentWave, table);
 
+			if (definition.kind != EnemyKind.Boss && currentWave >= eliteMinWave && UnityEngine.Random.value < eliteChance)
+				ApplyElite(instance);
+
 			waveSpawned++;
 			TotalSpawned++;
 
@@ -415,6 +430,26 @@ namespace ABGameplay.Enemies
 					nav.angularSpeed = definition.turnSpeed;
 				}
 			}
+		}
+
+		/// <summary>把刚生成的敌人强化为精英：更硬、更快、分值更高、体型略大。</summary>
+		void ApplyElite(GameObject instance)
+		{
+			if (instance == null) return;
+
+			var agent = instance.GetComponent<EnemyAgent>();
+			if (agent != null)
+				agent.scoreValue = Mathf.RoundToInt(agent.scoreValue * eliteScoreScale);
+
+			var health = instance.GetComponent<EnemyHealthEx>();
+			if (health != null)
+				health.ResetHealth(Mathf.RoundToInt(health.MaxHealth * eliteHealthScale));
+
+			var nav = instance.GetComponent<NavMeshAgent>();
+			if (nav != null) nav.speed *= eliteSpeedScale;
+
+			instance.transform.localScale *= eliteSizeScale;
+			instance.name += "_Elite";
 		}
 
 		Vector3 PickSpawnPosition()

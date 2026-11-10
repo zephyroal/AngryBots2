@@ -30,15 +30,19 @@ namespace ABGameplay.Campaign
 		[Header("Per-level Gains")]
 		public int rifleDamagePerLevel = 6;
 		public int shotgunDamagePerLevel = 4;
+		public int smgDamagePerLevel = 2;
 		public int rifleMagPerLevel = 6;
 		public int shotgunMagPerLevel = 2;
+		public int smgMagPerLevel = 8;
 		public int healthPerLevel = 25;
 
 		[Header("Baselines")]
 		public int baseRifleDamage = 25;
 		public int baseShotgunDamage = 12;
+		public int baseSmgDamage = 9;
 		public int baseRifleMag = 30;
 		public int baseShotgunMag = 8;
+		public int baseSmgMag = 40;
 		public int baseMaxHealth = 100;
 
 		public event Action Changed;
@@ -139,8 +143,10 @@ namespace ABGameplay.Campaign
 			{
 				weapons.rifleDamage = baseRifleDamage + damageLevel * rifleDamagePerLevel;
 				weapons.shotgunDamage = baseShotgunDamage + damageLevel * shotgunDamagePerLevel;
+				weapons.smgDamage = baseSmgDamage + damageLevel * smgDamagePerLevel;
 				weapons.rifleMagSize = baseRifleMag + ammoLevel * rifleMagPerLevel;
 				weapons.shotgunMagSize = baseShotgunMag + ammoLevel * shotgunMagPerLevel;
+				weapons.smgMagSize = baseSmgMag + ammoLevel * smgMagPerLevel;
 			}
 
 			var playerHealth = player.GetComponent<PlayerHealth>();
