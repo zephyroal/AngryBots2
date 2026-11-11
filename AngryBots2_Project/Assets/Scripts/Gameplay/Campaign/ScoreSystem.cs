@@ -197,6 +197,7 @@ namespace ABGameplay.Campaign
 			save.bestScore = Mathf.Max(save.bestScore, Score);
 			save.bestCombo = Mathf.Max(save.bestCombo, BestCombo);
 			save.totalScore += Score;
+			SaveSystem.RecordRun(Score);
 			SaveSystem.Save();
 		}
 

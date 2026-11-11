@@ -137,6 +137,19 @@ namespace ABGameplay.Campaign
 					(completed ? "   ✔" : string.Empty));
 			}
 			levelListText.text = builder.ToString();
+			builder.AppendLine();
+			builder.AppendLine("LOCAL RECORDS (TOP 5)");
+			var runs = SaveSystem.Data.bestRuns;
+			if (runs == null || runs.Count == 0)
+			{
+				builder.AppendLine("  --");
+			}
+			else
+			{
+				for (int i = 0; i < runs.Count; i++)
+					builder.AppendLine("  #" + (i + 1) + "   " + runs[i].ToString("N0"));
+			}
+			levelListText.text = builder.ToString();
 			levelPanel.SetActive(true);
 		}
 

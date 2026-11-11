@@ -48,6 +48,7 @@ namespace ABGameplay
             VerifyScore();
             VerifyUpgrades();
             VerifySmgAndRewards();
+            VerifyLeaderboard();
             VerifyMissions();
             VerifyContentConfig();
             VerifyBuildSettings();
@@ -92,6 +93,7 @@ namespace ABGameplay
                 healthLevel = 4,
                 sensitivity = 3.5f,
                 volume = 0.42f,
+                bestRuns = new System.Collections.Generic.List<int> { 4321, 2100 },
             };
             probe.MarkCompleted(1);
 
@@ -105,6 +107,8 @@ namespace ABGameplay
             Check(loaded.highestUnlockedMission == 3, "存档解锁进度往返正确（3）");
             Check(loaded.damageLevel == 2 && loaded.ammoLevel == 1 && loaded.healthLevel == 4, "升级等级往返正确");
             Check(loaded.IsCompleted(1), "关卡完成记录往返正确");
+            Check(loaded.bestRuns != null && loaded.bestRuns.Count == 2 && loaded.bestRuns[0] == 4321,
+                "本地排行榜随存档往返正确");
             Check(Mathf.Abs(loaded.sensitivity - 3.5f) < 0.001f, "灵敏度设置往返正确");
             Check(File.Exists(SaveSystem.FilePath), "存档文件已写入: " + SaveSystem.FilePath);
 
@@ -220,6 +224,24 @@ namespace ABGameplay
             SaveSystem.ReplaceInMemory(new SaveData());
         }
 
+        static void VerifyLeaderboard()
+        {
+            SaveSystem.ReplaceInMemory(new SaveData());
+
+            int[] scores = { 1200, 5000, 800, 3000, 4500, 900 };
+            foreach (var score in scores) SaveSystem.RecordRun(score);
+
+            var runs = SaveSystem.Data.bestRuns;
+            Check(runs != null && runs.Count == 5, "排行榜只保留 Top 5（实际 " + (runs != null ? runs.Count : 0) + "）");
+            Check(runs != null && runs[0] == 5000 && runs[4] == 900, "排行榜按分数降序截断");
+            Check(runs != null && !runs.Contains(800), "最低分未进入 Top 5");
+
+            SaveSystem.RecordRun(0);
+            Check(SaveSystem.Data.bestRuns.Count == 5, "0 分不写入排行榜");
+
+            SaveSystem.ReplaceInMemory(new SaveData());
+        }
+
         static void VerifyMissions()
         {
             var missions = MissionDefinition.CreateDefaultCampaign();
@@ -266,6 +288,10 @@ namespace ABGameplay
             Check(kinds.Contains(EnemyKind.Buzzer), "刷怪表包含 Buzzer");
             Check(kinds.Contains(EnemyKind.Kamikaze), "刷怪表包含 Kamikaze");
             Check(table.bossEveryNWaves > 0, "刷怪表配置了 Boss 波间隔");
+
+            bool anyDrop = table.composition.Any(w => w.definition != null &&
+                (w.definition.healthDropChance > 0f || w.definition.ammoDropChance > 0f));
+            Check(anyDrop, "敌人定义配置了血包/弹药掉落概率");
         }
 
         static void VerifyBuildSettings()

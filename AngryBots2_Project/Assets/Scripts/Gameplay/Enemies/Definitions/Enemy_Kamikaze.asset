@@ -34,7 +34,7 @@ MonoBehaviour:
   staggerDuration: 0.18
   staggerCooldown: 0.6
   score: 15
-  healthDropChance: 0
-  ammoDropChance: 0
+  healthDropChance: 0.12
+  ammoDropChance: 0.18
   deathEffectPrefab: {fileID: 0}
   vocalClips: []

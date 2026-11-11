@@ -24,6 +24,9 @@ namespace ABGameplay.Campaign
 		public int currency;
 		public int totalKills;
 
+		/// <summary>本地排行榜（最多 5 条，降序）。</summary>
+		public List<int> bestRuns = new List<int>();
+
 		// 升级等级（商店）
 		public int damageLevel;
 		public int ammoLevel;
@@ -89,7 +92,20 @@ namespace ABGameplay.Campaign
 
 			if (data == null) data = new SaveData();
 			if (data.completedMissions == null) data.completedMissions = new List<int>();
+			if (data.bestRuns == null) data.bestRuns = new List<int>();
 			dirty = false;
+		}
+
+		/// <summary>记录一次通关成绩，维护本地 Top 5（降序）。</summary>
+		public static void RecordRun(int score)
+		{
+			if (score <= 0) return;
+			var save = Data;
+			if (save.bestRuns == null) save.bestRuns = new List<int>();
+			save.bestRuns.Add(score);
+			save.bestRuns.Sort((a, b) => b.CompareTo(a));
+			if (save.bestRuns.Count > 5) save.bestRuns.RemoveRange(5, save.bestRuns.Count - 5);
+			MarkDirty();
 		}
 
 		public static void Save()
@@ -132,6 +148,7 @@ namespace ABGameplay.Campaign
 		{
 			data = replacement ?? new SaveData();
 			if (data.completedMissions == null) data.completedMissions = new List<int>();
+			if (data.bestRuns == null) data.bestRuns = new List<int>();
 			loaded = true;
 			dirty = false;
 		}

@@ -239,10 +239,29 @@ public sealed class EnemyAgent : MonoBehaviour, IEnemyDamageable
 		if (killer == null) killer = lastPlayerAttacker;
 
 		EnemyRegistry.NotifyKilled(this, killer, transform.position, ScoreValue);
+		TryDropLoot();
 
 		// 旧 EnemyHealth 在 RemoveHealth 里自己销毁；独立血量的敌人在此销毁避免残留。
 		if (health == null && Adapter == null && gameObject.activeInHierarchy)
 			Destroy(gameObject, 0.01f);
+	}
+
+	/// <summary>按定义里的掉落概率生成血包 / 弹药包（每次死亡最多一个）。</summary>
+	void TryDropLoot()
+	{
+		if (definition == null) return;
+
+		float healthChance = Mathf.Clamp01(definition.healthDropChance);
+		float ammoChance = Mathf.Clamp01(definition.ammoDropChance);
+		if (healthChance <= 0f && ammoChance <= 0f) return;
+
+		var position = transform.position + Vector3.up * 0.35f;
+		float roll = UnityEngine.Random.value;
+
+		if (roll < healthChance)
+			SimplePickup.CreateHealthPack(position, 25, 0f);
+		else if (roll < healthChance + ammoChance)
+			SimplePickup.CreateAmmoPack(position, 20, 0f);
 	}
 
 	/// <summary>外部强制击杀（自爆 / 清场 / 调试）。</summary>

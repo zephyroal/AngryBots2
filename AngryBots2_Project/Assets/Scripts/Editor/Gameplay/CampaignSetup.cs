@@ -146,6 +146,11 @@ namespace ABGameplay
                 definition.prefab = prefab;
                 EditorUtility.SetDirty(definition);
             }
+
+            // 掉落概率默认值：让击杀有可感知的补给反馈（仅在从未配置时补默认）。
+            if (definition.healthDropChance <= 0f) definition.healthDropChance = 0.12f;
+            if (definition.ammoDropChance <= 0f) definition.ammoDropChance = 0.18f;
+            EditorUtility.SetDirty(definition);
         }
 
         static EnemySpawnTable EnsureSpawnTable(List<EnemyDefinition> definitions)

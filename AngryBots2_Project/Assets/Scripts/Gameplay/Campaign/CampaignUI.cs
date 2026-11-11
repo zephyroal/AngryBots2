@@ -494,6 +494,10 @@ namespace ABGameplay.Campaign
 				builder.AppendLine("MISSION    " + mission.Definition.displayName);
 				if (won) builder.AppendLine("REWARD     +" + mission.Definition.rewardCurrency + " CREDITS");
 			}
+			var runs = SaveSystem.Data.bestRuns;
+			if (runs != null && runs.Count > 0)
+				builder.AppendLine("LOCAL BEST " + runs[0].ToString("N0"));
+
 			resultBody.text = builder.ToString();
 
 			bool hasNext = CampaignManager.Instance != null && mission != null && mission.Definition != null &&
