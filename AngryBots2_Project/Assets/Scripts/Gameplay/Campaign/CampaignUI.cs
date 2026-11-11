@@ -1,4 +1,6 @@
 using System.Text;
+using System.Collections.Generic;
+using ABGameplay.Enemies;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +24,15 @@ namespace ABGameplay.Campaign
 		Text hintText;
 		string baseHint;
 		float hintOverrideUntil;
+
+		Text killFeedText;
+		readonly List<string> killFeedLines = new List<string>();
+		readonly List<float> killFeedTimes = new List<float>();
+
+		GameObject bossBar;
+		Image bossFill;
+		Text bossLabel;
+		BossBehaviour bossBehaviour;
 
 		GameObject pausePanel;
 		GameObject shopPanel;
@@ -65,6 +76,7 @@ namespace ABGameplay.Campaign
 				score.CurrencyChanged -= OnCurrencyChanged;
 			}
 			if (playerHealth != null) playerHealth.Died -= OnPlayerDied;
+			GameEvents.EnemyKilled -= OnKillFeed;
 		}
 
 		void Start()
@@ -97,6 +109,16 @@ namespace ABGameplay.Campaign
 			UiFactory.Anchor(currency.rectTransform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f),
 				new Vector2(-32f, -28f), new Vector2(420f, 60f));
 
+			// ─── HUD 右上：击杀播报 ───
+			var killFeed = UiFactory.CreateText(canvas.transform, "KillFeed", "", 18, TextAnchor.UpperRight);
+			killFeedText = killFeed;
+			killFeed.color = new Color(0.85f, 0.9f, 0.95f, 0.9f);
+			UiFactory.Anchor(killFeed.rectTransform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f),
+				new Vector2(-32f, -92f), new Vector2(460f, 150f));
+
+			// ─── HUD 顶部中央：Boss 血条 ───
+			BuildBossBar();
+
 			// ─── HUD 顶部中央：关卡 + 目标 ───
 			var missionLabel = UiFactory.CreateText(canvas.transform, "Mission", "", 24, TextAnchor.UpperCenter);
 			missionText = missionLabel;
@@ -127,6 +149,34 @@ namespace ABGameplay.Campaign
 			BuildShop();
 			BuildSettings();
 			BuildResult();
+		}
+
+		void BuildBossBar()
+		{
+			var root = UiFactory.CreateRect(canvas.transform, "BossBar");
+			UiFactory.Anchor(root, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
+				new Vector2(0f, -138f), new Vector2(820f, 30f));
+
+			var bg = UiFactory.CreatePanel(root, "BG", new Color(0.18f, 0.05f, 0.05f, 0.9f));
+			bg.anchorMin = Vector2.zero;
+			bg.anchorMax = Vector2.one;
+			bg.offsetMin = Vector2.zero;
+			bg.offsetMax = Vector2.zero;
+
+			var fill = UiFactory.CreatePanel(root, "Fill", new Color(0.9f, 0.22f, 0.16f, 0.95f));
+			fill.anchorMin = new Vector2(0f, 0f);
+			fill.anchorMax = new Vector2(1f, 1f);
+			fill.offsetMin = new Vector2(2f, 2f);
+			fill.offsetMax = new Vector2(-2f, -2f);
+			bossFill = fill.GetComponent<Image>();
+
+			bossLabel = UiFactory.CreateText(canvas.transform, "BossLabel", "", 22, TextAnchor.UpperCenter);
+			bossLabel.color = new Color(1f, 0.65f, 0.55f);
+			UiFactory.Anchor(bossLabel.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
+				new Vector2(0f, -168f), new Vector2(820f, 34f));
+
+			bossBar = root.gameObject;
+			bossBar.SetActive(false);
 		}
 
 		void BuildPause()
@@ -281,6 +331,7 @@ namespace ABGameplay.Campaign
 			}
 
 			if (playerHealth != null) playerHealth.Died += OnPlayerDied;
+			GameEvents.EnemyKilled += OnKillFeed;
 
 			RefreshStatus();
 		}
@@ -313,8 +364,11 @@ namespace ABGameplay.Campaign
 			}
 
 			refreshTimer -= Time.deltaTime;
-			if (refreshTimer > 0f) return;			refreshTimer = 0.2f;
+			if (refreshTimer > 0f) return;
+			refreshTimer = 0.2f;
 			RefreshStatus();
+			RefreshKillFeed();
+			RefreshBossBar();
 		}
 
 		/// <summary>在 HUD 底部临时显示一条提示（连击奖励 / 波次提示等）。</summary>
@@ -331,7 +385,9 @@ namespace ABGameplay.Campaign
 
 			string hp = playerHealth != null ? "HP " + playerHealth.CurrentHealth + " / " + playerHealth.MaxHealth : "HP --";
 			string ammo = weapons != null
-				? "AMMO " + weapons.CurrentMag + " / " + weapons.CurrentMagSize + (weapons.Reloading ? "  RELOADING" : "") +
+				? "AMMO " + weapons.CurrentMag + " / " + weapons.CurrentMagSize +
+				  "   RESERVE " + weapons.CurrentReserve +
+				  (weapons.Reloading ? "  RELOADING" : "") +
 				  "   GRENADE " + weapons.Grenades
 				: "AMMO --";
 
@@ -357,6 +413,52 @@ namespace ABGameplay.Campaign
 			comboText.text = combo > 1
 				? "COMBO x" + combo + "    MULT x" + (ScoreSystem.Instance != null ? ScoreSystem.Instance.Multiplier.ToString("0.0") : "1.0")
 				: string.Empty;
+		}
+
+		void OnKillFeed(EnemyKind kind, Vector3 position, GameObject killer, int scoreValue)
+		{
+			killFeedLines.Add(kind.ToString().ToUpperInvariant() + "   +" + scoreValue);
+			killFeedTimes.Add(Time.unscaledTime);
+			while (killFeedLines.Count > 4)
+			{
+				killFeedLines.RemoveAt(0);
+				killFeedTimes.RemoveAt(0);
+			}
+		}
+
+		void RefreshKillFeed()
+		{
+			if (killFeedText == null) return;
+
+			for (int i = killFeedLines.Count - 1; i >= 0; i--)
+			{
+				if (Time.unscaledTime - killFeedTimes[i] <= 4f) continue;
+				killFeedLines.RemoveAt(i);
+				killFeedTimes.RemoveAt(i);
+			}
+
+			killFeedText.text = string.Join("\n", killFeedLines);
+		}
+
+		void RefreshBossBar()
+		{
+			if (bossBar == null) return;
+
+			if (bossBehaviour == null) bossBehaviour = FindObjectOfType<BossBehaviour>();
+
+			bool show = bossBehaviour != null && !bossBehaviour.IsDead;
+			if (bossBar.activeSelf != show) bossBar.SetActive(show);
+			if (!show) return;
+
+			if (bossFill != null)
+				bossFill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(bossBehaviour.HealthRatio), 1f);
+
+			if (bossLabel != null)
+			{
+				var phase = bossBehaviour.CurrentPhase;
+				bossLabel.text = "BOSS   " + (phase != null ? phase.name : "PHASE " + (bossBehaviour.PhaseIndex + 1)) +
+					"   " + Mathf.RoundToInt(bossBehaviour.HealthRatio * 100f) + "%";
+			}
 		}
 
 		void OnCurrencyChanged(int amount)
@@ -460,7 +562,8 @@ namespace ABGameplay.Campaign
 		void RefreshSettings()
 		{
 			settingsInfo.text = "MOUSE SENSITIVITY   " + SaveSystem.Data.sensitivity.ToString("0.0") +
-				"\nMASTER VOLUME      " + Mathf.RoundToInt(SaveSystem.Data.volume * 100f) + "%";
+				"\nMASTER VOLUME      " + Mathf.RoundToInt(SaveSystem.Data.volume * 100f) + "%" +
+				"\nGAMEPAD            LEFT STICK MOVE · RIGHT STICK / MOUSE AIM (LEGACY AXES)";
 		}
 
 		void ChangeSensitivity(float delta)

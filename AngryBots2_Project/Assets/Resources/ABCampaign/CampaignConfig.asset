@@ -18,6 +18,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c17fdba5b11455e449a6eccc1368ca35, type: 2}
   - {fileID: 11400000, guid: 0d1fb1a0c018ad149b915fc2cdcc8e72, type: 2}
   - {fileID: 11400000, guid: 16122e3f8201d8d4aac806f556d127b3, type: 2}
+  - {fileID: 11400000, guid: 401656715372eaa4180d5e7adb9711f3, type: 2}
   playerPrefab: {fileID: 8783445679152717701, guid: bfe5fb299aa28b6469d665745ad07a23,
     type: 3}
   fallbackEnemyPrefab: {fileID: 4992132205002506527, guid: 22cf8734e217e44d484edb735346d258,

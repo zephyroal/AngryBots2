@@ -58,10 +58,13 @@ namespace ABGameplay.Campaign
 		public int rewardCurrency = 150;
 		public int rewardScore = 1000;
 
+		[Tooltip("每一波都是 Boss 波（Boss Rush）。")]
+		public bool forceBossEveryWave;
+
 		/// <summary>默认战役（Universe 内嵌，避免依赖资源资产）。</summary>
 		public static List<MissionDefinition> CreateDefaultCampaign()
 		{
-			return new List<MissionDefinition>
+			var list = new List<MissionDefinition>
 			{
 				Make(0, "00 · Training Ground", "_CompletedLevel", ObjectiveMode.ClearWaves, 5,
 					"波次生存训练：清空所有波次。", 1000, 120),
@@ -74,6 +77,13 @@ namespace ABGameplay.Campaign
 				Make(4, "04 · Escape", "Escape", ObjectiveMode.Escort, 6,
 					"护送幸存者抵达撤离点（40 米）。", 2600, 260),
 			};
+
+			var bossRush = Make(5, "05 · Boss Rush", "Escape", ObjectiveMode.ClearWaves, 3,
+				"连续三轮 Boss 战：每一波都是 Boss。", 3200, 320);
+			bossRush.forceBossEveryWave = true;
+			list.Add(bossRush);
+
+			return list;
 		}
 
 		static MissionDefinition Make(int index, string name, string scene, ObjectiveMode mode,

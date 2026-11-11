@@ -96,7 +96,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: e192a05c602887d4e8f9e4afc34e0d56,
+    type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: d0feb2fb8b5d2524c9685844df9a3b29,
     type: 2}
 --- !u!1 &5
@@ -109,6 +110,7 @@ GameObject:
   m_Component:
   - component: {fileID: 142}
   - component: {fileID: 405}
+  - component: {fileID: 407}
   m_Layer: 0
   m_Name: PlayerLight
   m_TagString: Untagged
@@ -536,6 +538,7 @@ GameObject:
   - component: {fileID: 327}
   - component: {fileID: 422}
   - component: {fileID: 406}
+  - component: {fileID: 570715131}
   m_Layer: 12
   m_Name: muzzleFlash
   m_TagString: Untagged
@@ -4088,6 +4091,29 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!111 &408
 Animation:
   m_ObjectHideFlags: 0
@@ -5062,7 +5088,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_ScaleInLightmap
-      value: 1.180000
+      value: 1.18
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_LightmapTilingOffset.w
@@ -5166,7 +5192,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2300010, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_ScaleInLightmap
-      value: 1.060000
+      value: 1.06
       objectReference: {fileID: 0}
     - target: {fileID: 2300010, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_LightmapTilingOffset.w
@@ -5210,7 +5236,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2300014, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_ScaleInLightmap
-      value: 1.180000
+      value: 1.18
       objectReference: {fileID: 0}
     - target: {fileID: 2300014, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_LightmapTilingOffset.w
@@ -5234,7 +5260,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2300016, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_ScaleInLightmap
-      value: 1.210000
+      value: 1.21
       objectReference: {fileID: 0}
     - target: {fileID: 2300016, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_LightmapTilingOffset.w
@@ -5622,7 +5648,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2300052, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_ScaleInLightmap
-      value: 0.180000
+      value: 0.18
       objectReference: {fileID: 0}
     - target: {fileID: 2300052, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_LightmapTilingOffset.w
@@ -6093,6 +6119,29 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 23800000, guid: 990673a64d8d7974da49ef36d97141bf, type: 2}
+--- !u!114 &570715131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 82}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!114 &860849607
 MonoBehaviour:
   m_ObjectHideFlags: 0

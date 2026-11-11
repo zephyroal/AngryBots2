@@ -25,3 +25,4 @@ MonoBehaviour:
   escortDistance: 40
   rewardCurrency: 160
   rewardScore: 1600
+  forceBossEveryWave: 0

@@ -178,16 +178,15 @@ public sealed class SimplePickup : MonoBehaviour
 
 	static bool AddAmmo(PlayerHealth player, int amount)
 	{
-		var adapter = player.GetComponent<WeaponSystemAdapter>();
-		if (adapter != null) return adapter.AddAmmo(amount) > 0;
-
 		var weapons = player.GetComponent<WeaponSystem>();
 		if (weapons == null) return false;
 
-		// 旧 WeaponSystem 没有备弹 / 补弹入口：玩家预制体需要替换成 WeaponSystemAdapter
-		// （GameplayBootstrap 会自动完成）。
-		if (weapons.CurrentMag >= weapons.CurrentMagSize) return false;
-		return false;
+		// 优先补备弹（换弹消耗），适配器再顺手补弹匣，保证捡到就有子弹可用。
+		int added = weapons.AddReserve(amount);
+		var adapter = player.GetComponent<WeaponSystemAdapter>();
+		if (adapter != null) added += adapter.AddAmmo(amount);
+
+		return added > 0;
 	}
 
 	static bool AddGrenades(PlayerHealth player, int amount)

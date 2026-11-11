@@ -34,6 +34,9 @@ namespace ABGameplay.Campaign
 		/// <summary>关卡开始（UI 刷新用）。</summary>
 		public event Action<MissionDefinition> MissionStarted;
 
+		/// <summary>跨场景保留“本次要从哪一关进入”（同一场景可能对应多个关卡，如 Boss Rush）。</summary>
+		static int pendingIndex = -1;
+
 		void Awake()
 		{
 			if (Instance != null && Instance != this)
@@ -46,11 +49,17 @@ namespace ABGameplay.Campaign
 			Missions = Config != null && Config.missions != null && Config.missions.Count > 0
 				? new List<MissionDefinition>(Config.missions)
 				: DefaultCampaign();
+
+			int pending = pendingIndex;
+			pendingIndex = -1;
+			CurrentIndex = pending >= 0 && pending < Missions.Count &&
+				Missions[pending] != null && Missions[pending].sceneName == gameObject.scene.name
+				? pending
+				: IndexOfScene(gameObject.scene.name);
 		}
 
 		void Start()
 		{
-			CurrentIndex = IndexOfScene(gameObject.scene.name);
 			if (CurrentIndex >= 0 && Current != null && MissionStarted != null) MissionStarted(Current);
 		}
 
@@ -96,6 +105,7 @@ namespace ABGameplay.Campaign
 			if (mission == null || string.IsNullOrEmpty(mission.sceneName)) return false;
 
 			CurrentIndex = index;
+			pendingIndex = index;
 			SaveSystem.Data.checkpointMission = index;
 			SaveSystem.Data.checkpointScore = 0;
 			SaveSystem.MarkDirty();

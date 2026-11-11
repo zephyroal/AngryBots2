@@ -96,7 +96,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: cd4c8bcf4b635354f87a8cf5524149e7,
+    type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 37642d357628930408f53523eb9ab877,
     type: 2}
 --- !u!1 &5
@@ -109,6 +110,7 @@ GameObject:
   m_Component:
   - component: {fileID: 98}
   - component: {fileID: 328}
+  - component: {fileID: 330}
   m_Layer: 0
   m_Name: PlayerLight
   m_TagString: Untagged
@@ -2832,6 +2834,29 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 1
+--- !u!114 &330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!124 &331
 Behaviour:
   m_ObjectHideFlags: 0
@@ -3405,7 +3430,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_ScaleInLightmap
-      value: 1.180000
+      value: 1.18
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_LightmapTilingOffset.w
@@ -3509,7 +3534,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2300010, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_ScaleInLightmap
-      value: 1.060000
+      value: 1.06
       objectReference: {fileID: 0}
     - target: {fileID: 2300010, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_LightmapTilingOffset.w
@@ -3553,7 +3578,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2300014, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_ScaleInLightmap
-      value: 1.180000
+      value: 1.18
       objectReference: {fileID: 0}
     - target: {fileID: 2300014, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_LightmapTilingOffset.w
@@ -3577,7 +3602,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2300016, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_ScaleInLightmap
-      value: 1.210000
+      value: 1.21
       objectReference: {fileID: 0}
     - target: {fileID: 2300016, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_LightmapTilingOffset.w
@@ -3965,7 +3990,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2300052, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_ScaleInLightmap
-      value: 0.180000
+      value: 0.18
       objectReference: {fileID: 0}
     - target: {fileID: 2300052, guid: 15a39438a4a5f4453bfe848ea137d3b5, type: 3}
       propertyPath: m_LightmapTilingOffset.w

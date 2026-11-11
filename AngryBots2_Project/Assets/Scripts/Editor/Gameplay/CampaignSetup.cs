@@ -219,6 +219,7 @@ namespace ABGameplay
                     asset.escortDistance = defaults[i].escortDistance;
                     asset.rewardCurrency = defaults[i].rewardCurrency;
                     asset.rewardScore = defaults[i].rewardScore;
+                    asset.forceBossEveryWave = defaults[i].forceBossEveryWave;
                     EditorUtility.SetDirty(asset);
                 }
                 result.Add(asset);

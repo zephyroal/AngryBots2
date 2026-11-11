@@ -163,12 +163,34 @@ namespace ABGameplay.Campaign
 				table.totalWaves = 0; // 无限波
 			}
 
+			if (Definition.forceBossEveryWave)
+			{
+				table.bossEveryNWaves = 1;
+				if (table.bossDefinition == null) table.bossDefinition = FindBossDefinition();
+			}
+
 			Director.spawnTable = table;
 			Director.fallbackEnemyPrefab = config != null ? config.fallbackEnemyPrefab : null;
 			Director.autoStart = true;
 			Director.endAfterLastWave = Definition.mode == ObjectiveMode.ClearWaves;
 			Director.failOnPlayerDeath = true;
 			Director.OnMissionEnded += OnDirectorEnded;
+		}
+
+		EnemyDefinition FindBossDefinition()
+		{
+			var config = CampaignManager.Config;
+			var table = config != null ? config.enemyTable : null;
+			if (table == null) return null;
+			if (table.bossDefinition != null) return table.bossDefinition;
+
+			for (int i = 0; i < table.composition.Count; i++)
+			{
+				var weight = table.composition[i];
+				if (weight != null && weight.definition != null && weight.definition.kind == EnemyKind.Boss)
+					return weight.definition;
+			}
+			return null;
 		}
 
 		void SetupEscort()

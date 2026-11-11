@@ -223,12 +223,13 @@ namespace ABGameplay
         static void VerifyMissions()
         {
             var missions = MissionDefinition.CreateDefaultCampaign();
-            Check(missions.Count == 5, "默认战役包含 5 个关卡（实际 " + missions.Count + "）");
+            Check(missions.Count == 6, "默认战役包含 6 个关卡（实际 " + missions.Count + "）");
             Check(missions[0].mode == ObjectiveMode.ClearWaves, "第 1 关为清场");
             Check(missions[1].mode == ObjectiveMode.ClearWaves, "第 2 关为清场");
             Check(missions[2].mode == ObjectiveMode.Timed, "第 3 关为限时");
             Check(missions[3].mode == ObjectiveMode.Defend, "第 4 关为防守");
             Check(missions[4].mode == ObjectiveMode.Escort, "第 5 关为护送");
+            Check(missions.Count > 5 && missions[5].forceBossEveryWave, "第 6 关为 Boss Rush（每波 Boss）");
 
             foreach (var mission in missions)
             {
@@ -243,7 +244,7 @@ namespace ABGameplay
             Check(config != null, "Resources/ABCampaign/CampaignConfig 可加载");
             if (config == null) return;
 
-            Check(config.missions != null && config.missions.Count == 5, "配置含 5 个关卡");
+            Check(config.missions != null && config.missions.Count == 6, "配置含 6 个关卡");
             Check(config.playerPrefab != null, "配置绑定玩家预制体");
             Check(config.enemyTable != null, "配置绑定刷怪表");
             Check(config.fallbackEnemyPrefab != null, "配置绑定兜底敌人预制体");
@@ -315,6 +316,21 @@ namespace ABGameplay
 
             UnityEngine.Object.DestroyImmediate(go);
             UnityEngine.Object.DestroyImmediate(definition);
+
+            // Boss Rush：每波都是 Boss
+            var bossRush = UnityEngine.Object.Instantiate(MissionDefinition.CreateDefaultCampaign()[5]);
+            bossRush.totalWaves = 3;
+            var bossGo = new GameObject("[VerifyBossRush]");
+            var bossController = bossGo.AddComponent<MissionController>();
+            bossController.Definition = bossRush;
+            bossController.Begin(bossRush);
+            Check(bossController.Director != null &&
+                  bossController.Director.spawnTable != null &&
+                  bossController.Director.spawnTable.bossEveryNWaves == 1,
+                "Boss Rush 关卡把刷怪表配置为每波 Boss");
+            UnityEngine.Object.DestroyImmediate(bossGo);
+            UnityEngine.Object.DestroyImmediate(bossRush);
+
             SaveSystem.ReplaceInMemory(new SaveData());
         }
 

@@ -93,6 +93,49 @@ public class WeaponSystem : MonoBehaviour
 	/// <summary>弹药、模式、手雷数量变化时触发，HUD 据此刷新。</summary>
 	public event Action AmmoChanged;
 
+	/// <summary>备弹（弹匣之外）。换弹从备弹扣除。</summary>
+	public int RifleReserve { get; private set; }
+	public int ShotgunReserve { get; private set; }
+	public int SmgReserve { get; private set; }
+
+	/// <summary>当前武器备弹。</summary>
+	public int CurrentReserve
+	{
+		get
+		{
+			EnsureAmmoInitialized();
+			switch (Mode)
+			{
+				case WeaponMode.Rifle: return RifleReserve;
+				case WeaponMode.Shotgun: return ShotgunReserve;
+				default: return SmgReserve;
+			}
+		}
+	}
+
+	/// <summary>补充当前武器备弹，返回实际补充数量。</summary>
+	public int AddReserve(int amount)
+	{
+		EnsureAmmoInitialized();
+		if (amount <= 0) return 0;
+
+		int capacity = CurrentMagSize * 6;
+		int before = CurrentReserve;
+		int after = Mathf.Clamp(before + amount, 0, capacity);
+		int added = after - before;
+		if (added <= 0) return 0;
+
+		switch (Mode)
+		{
+			case WeaponMode.Rifle: RifleReserve = after; break;
+			case WeaponMode.Shotgun: ShotgunReserve = after; break;
+			default: SmgReserve = after; break;
+		}
+
+		RaiseAmmoChanged();
+		return added;
+	}
+
 	PlayerHealth playerHealth;
 	float nextFireTime;
 	float nextGrenadeTime;
@@ -134,6 +177,9 @@ public class WeaponSystem : MonoBehaviour
 		RifleAmmo = rifleMagSize;
 		ShotgunAmmo = shotgunMagSize;
 		SmgAmmo = smgMagSize;
+		RifleReserve = rifleMagSize * 4;
+		ShotgunReserve = shotgunMagSize * 4;
+		SmgReserve = smgMagSize * 4;
 		Grenades = grenadeCharges;
 	}
 
@@ -220,13 +266,20 @@ public class WeaponSystem : MonoBehaviour
 		Reloading = true;
 		RaiseAmmoChanged();
 
+		// 换弹开始时就锁定要装填的数量（避免换弹过程中切枪导致数量错乱）。
+		int needed = Mathf.Max(0, CurrentMagSize - CurrentMag);
+		int take = Mathf.Min(needed, CurrentReserve);
+
 		float reloadTime = Mode == WeaponMode.Rifle ? rifleReloadTime
 			: (Mode == WeaponMode.Shotgun ? shotgunReloadTime : smgReloadTime);
 		yield return new WaitForSeconds(reloadTime);
 
-		if (Mode == WeaponMode.Rifle) RifleAmmo = rifleMagSize;
-		else if (Mode == WeaponMode.Shotgun) ShotgunAmmo = shotgunMagSize;
-		else SmgAmmo = smgMagSize;
+		if (take > 0)
+		{
+			if (Mode == WeaponMode.Rifle) { RifleAmmo += take; RifleReserve -= take; }
+			else if (Mode == WeaponMode.Shotgun) { ShotgunAmmo += take; ShotgunReserve -= take; }
+			else { SmgAmmo += take; SmgReserve -= take; }
+		}
 
 		Reloading = false;
 		RaiseAmmoChanged();

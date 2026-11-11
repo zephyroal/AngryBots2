@@ -214,7 +214,8 @@ namespace ABGameplay.Campaign
 		void RefreshSettings()
 		{
 			settingsInfo.text = "MOUSE SENSITIVITY   " + SaveSystem.Data.sensitivity.ToString("0.0") +
-				"\nMASTER VOLUME      " + Mathf.RoundToInt(SaveSystem.Data.volume * 100f) + "%";
+				"\nMASTER VOLUME      " + Mathf.RoundToInt(SaveSystem.Data.volume * 100f) + "%" +
+				"\nGAMEPAD            LEFT STICK MOVE · RIGHT STICK / MOUSE AIM (LEGACY AXES)";
 		}
 
 		void ChangeSensitivity(float delta)

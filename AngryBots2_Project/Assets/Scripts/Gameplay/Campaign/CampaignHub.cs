@@ -29,7 +29,12 @@ namespace ABGameplay.Campaign
 				return;
 			}
 
-			var mission = CampaignManager.Instance != null
+			CampaignManager.EnsureInstance();
+			ScoreSystem.EnsureInstance();
+			UpgradeSystem.EnsureInstance();
+			ComboReward.EnsureInstance();
+
+			var mission = CampaignManager.Instance != null && CampaignManager.Instance.Current != null
 				? CampaignManager.Instance.Current
 				: CampaignManager.DefaultMissionForScene(scene);
 
@@ -38,11 +43,6 @@ namespace ABGameplay.Campaign
 
 			EnsurePlayer(scene);
 			BindSceneEnemies(GameObject.FindGameObjectWithTag("Player"));
-
-			CampaignManager.EnsureInstance();
-			ScoreSystem.EnsureInstance();
-			UpgradeSystem.EnsureInstance();
-			ComboReward.EnsureInstance();
 
 			if (mission != null)
 			{
