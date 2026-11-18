@@ -1,90 +1,254 @@
 fileFormatVersion: 2
 guid: 54aa74597a4c34d4d8ce4c4b9b0da35e
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: InteriorRocks
-    100002: //RootNode
-    100004: InteriorRocks_A
-    100006: pasted__Rock
-    100008: pasted__Rock1
-    100010: pasted__Rock11
-    100012: pasted__Rock15
-    100014: pasted__Rock2
-    100016: pasted__Rock3
-    100018: pasted__Rock4
-    100020: pasted__Rock5
-    100022: pasted__Rock6
-    100024: pasted__Rock7
-    100026: polySurface6054
-    100028: polySurface6055
-    100030: polySurface6056
-    100032: polySurface6057
-    100034: polySurface6058
-    400000: InteriorRocks
-    400002: //RootNode
-    400004: InteriorRocks_A
-    400006: pasted__Rock
-    400008: pasted__Rock1
-    400010: pasted__Rock11
-    400012: pasted__Rock15
-    400014: pasted__Rock2
-    400016: pasted__Rock3
-    400018: pasted__Rock4
-    400020: pasted__Rock5
-    400022: pasted__Rock6
-    400024: pasted__Rock7
-    400026: polySurface6054
-    400028: polySurface6055
-    400030: polySurface6056
-    400032: polySurface6057
-    400034: polySurface6058
-    2300000: pasted__Rock
-    2300002: pasted__Rock1
-    2300004: pasted__Rock11
-    2300006: pasted__Rock15
-    2300008: pasted__Rock2
-    2300010: pasted__Rock3
-    2300012: pasted__Rock4
-    2300014: pasted__Rock5
-    2300016: pasted__Rock6
-    2300018: pasted__Rock7
-    2300020: polySurface6054
-    2300022: polySurface6055
-    2300024: polySurface6056
-    2300026: polySurface6057
-    2300028: polySurface6058
-    3300000: pasted__Rock
-    3300002: pasted__Rock1
-    3300004: pasted__Rock11
-    3300006: pasted__Rock15
-    3300008: pasted__Rock2
-    3300010: pasted__Rock3
-    3300012: pasted__Rock4
-    3300014: pasted__Rock5
-    3300016: pasted__Rock6
-    3300018: pasted__Rock7
-    3300020: polySurface6054
-    3300022: polySurface6055
-    3300024: polySurface6056
-    3300026: polySurface6057
-    3300028: polySurface6058
-    4300000: pasted__Rock
-    4300002: pasted__Rock1
-    4300004: pasted__Rock7
-    4300006: pasted__Rock6
-    4300008: pasted__Rock11
-    4300010: polySurface6057
-    4300012: polySurface6054
-    4300014: polySurface6055
-    4300016: polySurface6056
-    4300018: pasted__Rock5
-    4300020: pasted__Rock2
-    4300022: pasted__Rock4
-    4300024: pasted__Rock3
-    4300026: polySurface6058
-    4300028: pasted__Rock15
-    9500000: //RootNode
+  serializedVersion: 22361
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: InteriorRocks
+  - first:
+      1: 100002
+    second: //RootNode
+  - first:
+      1: 100004
+    second: InteriorRocks_A
+  - first:
+      1: 100006
+    second: pasted__Rock
+  - first:
+      1: 100008
+    second: pasted__Rock1
+  - first:
+      1: 100010
+    second: pasted__Rock11
+  - first:
+      1: 100012
+    second: pasted__Rock15
+  - first:
+      1: 100014
+    second: pasted__Rock2
+  - first:
+      1: 100016
+    second: pasted__Rock3
+  - first:
+      1: 100018
+    second: pasted__Rock4
+  - first:
+      1: 100020
+    second: pasted__Rock5
+  - first:
+      1: 100022
+    second: pasted__Rock6
+  - first:
+      1: 100024
+    second: pasted__Rock7
+  - first:
+      1: 100026
+    second: polySurface6054
+  - first:
+      1: 100028
+    second: polySurface6055
+  - first:
+      1: 100030
+    second: polySurface6056
+  - first:
+      1: 100032
+    second: polySurface6057
+  - first:
+      1: 100034
+    second: polySurface6058
+  - first:
+      4: 400000
+    second: InteriorRocks
+  - first:
+      4: 400002
+    second: //RootNode
+  - first:
+      4: 400004
+    second: InteriorRocks_A
+  - first:
+      4: 400006
+    second: pasted__Rock
+  - first:
+      4: 400008
+    second: pasted__Rock1
+  - first:
+      4: 400010
+    second: pasted__Rock11
+  - first:
+      4: 400012
+    second: pasted__Rock15
+  - first:
+      4: 400014
+    second: pasted__Rock2
+  - first:
+      4: 400016
+    second: pasted__Rock3
+  - first:
+      4: 400018
+    second: pasted__Rock4
+  - first:
+      4: 400020
+    second: pasted__Rock5
+  - first:
+      4: 400022
+    second: pasted__Rock6
+  - first:
+      4: 400024
+    second: pasted__Rock7
+  - first:
+      4: 400026
+    second: polySurface6054
+  - first:
+      4: 400028
+    second: polySurface6055
+  - first:
+      4: 400030
+    second: polySurface6056
+  - first:
+      4: 400032
+    second: polySurface6057
+  - first:
+      4: 400034
+    second: polySurface6058
+  - first:
+      23: 2300000
+    second: pasted__Rock
+  - first:
+      23: 2300002
+    second: pasted__Rock1
+  - first:
+      23: 2300004
+    second: pasted__Rock11
+  - first:
+      23: 2300006
+    second: pasted__Rock15
+  - first:
+      23: 2300008
+    second: pasted__Rock2
+  - first:
+      23: 2300010
+    second: pasted__Rock3
+  - first:
+      23: 2300012
+    second: pasted__Rock4
+  - first:
+      23: 2300014
+    second: pasted__Rock5
+  - first:
+      23: 2300016
+    second: pasted__Rock6
+  - first:
+      23: 2300018
+    second: pasted__Rock7
+  - first:
+      23: 2300020
+    second: polySurface6054
+  - first:
+      23: 2300022
+    second: polySurface6055
+  - first:
+      23: 2300024
+    second: polySurface6056
+  - first:
+      23: 2300026
+    second: polySurface6057
+  - first:
+      23: 2300028
+    second: polySurface6058
+  - first:
+      33: 3300000
+    second: pasted__Rock
+  - first:
+      33: 3300002
+    second: pasted__Rock1
+  - first:
+      33: 3300004
+    second: pasted__Rock11
+  - first:
+      33: 3300006
+    second: pasted__Rock15
+  - first:
+      33: 3300008
+    second: pasted__Rock2
+  - first:
+      33: 3300010
+    second: pasted__Rock3
+  - first:
+      33: 3300012
+    second: pasted__Rock4
+  - first:
+      33: 3300014
+    second: pasted__Rock5
+  - first:
+      33: 3300016
+    second: pasted__Rock6
+  - first:
+      33: 3300018
+    second: pasted__Rock7
+  - first:
+      33: 3300020
+    second: polySurface6054
+  - first:
+      33: 3300022
+    second: polySurface6055
+  - first:
+      33: 3300024
+    second: polySurface6056
+  - first:
+      33: 3300026
+    second: polySurface6057
+  - first:
+      33: 3300028
+    second: polySurface6058
+  - first:
+      43: 4300000
+    second: pasted__Rock
+  - first:
+      43: 4300002
+    second: pasted__Rock1
+  - first:
+      43: 4300004
+    second: pasted__Rock7
+  - first:
+      43: 4300006
+    second: pasted__Rock6
+  - first:
+      43: 4300008
+    second: pasted__Rock11
+  - first:
+      43: 4300010
+    second: polySurface6057
+  - first:
+      43: 4300012
+    second: polySurface6054
+  - first:
+      43: 4300014
+    second: polySurface6055
+  - first:
+      43: 4300016
+    second: polySurface6056
+  - first:
+      43: 4300018
+    second: pasted__Rock5
+  - first:
+      43: 4300020
+    second: pasted__Rock2
+  - first:
+      43: 4300022
+    second: pasted__Rock4
+  - first:
+      43: 4300024
+    second: pasted__Rock3
+  - first:
+      43: 4300026
+    second: polySurface6058
+  - first:
+      43: 4300028
+    second: pasted__Rock15
+  - first:
+      95: 9500000
+    second: //RootNode
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -92,7 +256,7 @@ ModelImporter:
       name: CliffRock_A_mat
     second: {fileID: 2100000, guid: 0401502e6f4fecd44a9dc9eec66b1f75, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -101,6 +265,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -111,6 +276,9 @@ ModelImporter:
     importAnimatedCustomProperties: 0
     importConstraints: 0
     animationCompression: 1
+    aCLCompressionLevel: 3
+    aCLCurvePrecision: 0.01
+    aCLFastSampleMode: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -118,32 +286,229 @@ ModelImporter:
     extraExposedTransformPaths: []
     extraUserProperties: []
     clipAnimations: []
-    isReadable: 1
+    isReadable: 0
+    tuanjieGIEnable: 0
+    tuanjieGIGenSDFFactor: 1
+    tuanjieGIGenSDFBias: 0.25
+    tuanjieGIDoubleSidedMode: 0
+    tuanjieGIGenFacetNums: 12
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
+    totalVerticesCount: 17317
+    totalTrianglesCount: 19344
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 1
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
     indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 0
-    previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 1
+    strictVertexDataChecks: 0
+  virtualGeometry:
+    virtualGeometry: 0
+    virtualGeometrySettings:
+      serializedVersion: 1
+      generateGeometryBuffer: 0
+      surfaceCompensation: 0
+      allMeshUse: 1
+      generateMeshProxy: 0
+      selectedMeshProxyLODFactor: 0.15
+      ignoreSimpleMesh: 0
+      transformScaleState: -1
+      isPossibleOverflow: 0
+      hasBoneData: 0
+      isBoneCountOverflow: 0
+      hasMaterialIncompatible: 0
+      perMeshControl: 0
+    virtualGeometryPlatformSettings:
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: DefaultVirtualGeometryPlatform
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: Standalone
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: iPhone
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: Android
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    virtualGeometryMeshDatas:
+    - meshName: pasted__Rock
+      meshIndex: 0
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: pasted__Rock1
+      meshIndex: 1
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: pasted__Rock7
+      meshIndex: 2
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: pasted__Rock6
+      meshIndex: 3
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: pasted__Rock11
+      meshIndex: 4
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: polySurface6057
+      meshIndex: 5
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: polySurface6054
+      meshIndex: 6
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: polySurface6055
+      meshIndex: 7
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: polySurface6056
+      meshIndex: 8
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: pasted__Rock5
+      meshIndex: 9
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: pasted__Rock2
+      meshIndex: 10
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: pasted__Rock4
+      meshIndex: 11
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: pasted__Rock3
+      meshIndex: 12
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: polySurface6058
+      meshIndex: 13
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: pasted__Rock15
+      meshIndex: 14
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -152,12 +517,16 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 0
-  copyAvatar: 0
+  overrideDefaultPose: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
+    namedPoseList:
+    - name: Default
+      skeleton: []
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -165,13 +534,20 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
+    defaultPoseIndex: -1
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 0
   humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

@@ -1,96 +1,266 @@
 fileFormatVersion: 2
 guid: 6cc25772cddf45146953377498bcae80
-timeCreated: 1516931815
-licenseType: Free
 ModelImporter:
-  serializedVersion: 22
-  fileIDToRecycleName:
-    100000: //RootNode
-    100002: EnemySpider
-    100004: EnemySpider_A_LB_leg
-    100006: EnemySpider_A_LF_leg
-    100008: EnemySpider_A_RB_leg
-    100010: EnemySpider_A_RF_leg
-    100012: EnemySpider_B_LB_leg
-    100014: EnemySpider_B_LF_leg
-    100016: EnemySpider_B_RB_leg
-    100018: EnemySpider_B_RF_leg
-    100020: EnemySpider_body
-    100022: EnemySpider_C_LB_leg
-    100024: EnemySpider_C_LF_leg
-    100026: EnemySpider_C_RB_leg
-    100028: EnemySpider_C_RF_leg
-    100030: EnemySpider_LB_leg
-    100032: EnemySpider_LF_leg
-    100034: EnemySpider_main_root
-    100036: EnemySpider_RB_leg
-    100038: EnemySpider_RF_leg
-    100040: EnemySpider_waist
-    400000: //RootNode
-    400002: EnemySpider
-    400004: EnemySpider_A_LB_leg
-    400006: EnemySpider_A_LF_leg
-    400008: EnemySpider_A_RB_leg
-    400010: EnemySpider_A_RF_leg
-    400012: EnemySpider_B_LB_leg
-    400014: EnemySpider_B_LF_leg
-    400016: EnemySpider_B_RB_leg
-    400018: EnemySpider_B_RF_leg
-    400020: EnemySpider_body
-    400022: EnemySpider_C_LB_leg
-    400024: EnemySpider_C_LF_leg
-    400026: EnemySpider_C_RB_leg
-    400028: EnemySpider_C_RF_leg
-    400030: EnemySpider_LB_leg
-    400032: EnemySpider_LF_leg
-    400034: EnemySpider_main_root
-    400036: EnemySpider_RB_leg
-    400038: EnemySpider_RF_leg
-    400040: EnemySpider_waist
-    2100000: blinn5
-    2300000: EnemySpider_A_LB_leg
-    2300002: EnemySpider_A_LF_leg
-    2300004: EnemySpider_A_RB_leg
-    2300006: EnemySpider_A_RF_leg
-    2300008: EnemySpider_B_LB_leg
-    2300010: EnemySpider_B_LF_leg
-    2300012: EnemySpider_B_RB_leg
-    2300014: EnemySpider_B_RF_leg
-    2300016: EnemySpider_body
-    2300018: EnemySpider_C_LB_leg
-    2300020: EnemySpider_C_LF_leg
-    2300022: EnemySpider_C_RB_leg
-    2300024: EnemySpider_C_RF_leg
-    2300026: EnemySpider_waist
-    3300000: EnemySpider_A_LB_leg
-    3300002: EnemySpider_A_LF_leg
-    3300004: EnemySpider_A_RB_leg
-    3300006: EnemySpider_A_RF_leg
-    3300008: EnemySpider_B_LB_leg
-    3300010: EnemySpider_B_LF_leg
-    3300012: EnemySpider_B_RB_leg
-    3300014: EnemySpider_B_RF_leg
-    3300016: EnemySpider_body
-    3300018: EnemySpider_C_LB_leg
-    3300020: EnemySpider_C_LF_leg
-    3300022: EnemySpider_C_RB_leg
-    3300024: EnemySpider_C_RF_leg
-    3300026: EnemySpider_waist
-    4300000: EnemySpider_waist
-    4300002: EnemySpider_body
-    4300004: EnemySpider_A_RB_leg
-    4300006: EnemySpider_B_RB_leg
-    4300008: EnemySpider_C_RB_leg
-    4300010: EnemySpider_A_LB_leg
-    4300012: EnemySpider_B_LB_leg
-    4300014: EnemySpider_C_LB_leg
-    4300016: EnemySpider_A_RF_leg
-    4300018: EnemySpider_B_RF_leg
-    4300020: EnemySpider_C_RF_leg
-    4300022: EnemySpider_A_LF_leg
-    4300024: EnemySpider_B_LF_leg
-    4300026: EnemySpider_C_LF_leg
-    9500000: //RootNode
+  serializedVersion: 22361
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: //RootNode
+  - first:
+      1: 100002
+    second: EnemySpider
+  - first:
+      1: 100004
+    second: EnemySpider_A_LB_leg
+  - first:
+      1: 100006
+    second: EnemySpider_A_LF_leg
+  - first:
+      1: 100008
+    second: EnemySpider_A_RB_leg
+  - first:
+      1: 100010
+    second: EnemySpider_A_RF_leg
+  - first:
+      1: 100012
+    second: EnemySpider_B_LB_leg
+  - first:
+      1: 100014
+    second: EnemySpider_B_LF_leg
+  - first:
+      1: 100016
+    second: EnemySpider_B_RB_leg
+  - first:
+      1: 100018
+    second: EnemySpider_B_RF_leg
+  - first:
+      1: 100020
+    second: EnemySpider_body
+  - first:
+      1: 100022
+    second: EnemySpider_C_LB_leg
+  - first:
+      1: 100024
+    second: EnemySpider_C_LF_leg
+  - first:
+      1: 100026
+    second: EnemySpider_C_RB_leg
+  - first:
+      1: 100028
+    second: EnemySpider_C_RF_leg
+  - first:
+      1: 100030
+    second: EnemySpider_LB_leg
+  - first:
+      1: 100032
+    second: EnemySpider_LF_leg
+  - first:
+      1: 100034
+    second: EnemySpider_main_root
+  - first:
+      1: 100036
+    second: EnemySpider_RB_leg
+  - first:
+      1: 100038
+    second: EnemySpider_RF_leg
+  - first:
+      1: 100040
+    second: EnemySpider_waist
+  - first:
+      4: 400000
+    second: //RootNode
+  - first:
+      4: 400002
+    second: EnemySpider
+  - first:
+      4: 400004
+    second: EnemySpider_A_LB_leg
+  - first:
+      4: 400006
+    second: EnemySpider_A_LF_leg
+  - first:
+      4: 400008
+    second: EnemySpider_A_RB_leg
+  - first:
+      4: 400010
+    second: EnemySpider_A_RF_leg
+  - first:
+      4: 400012
+    second: EnemySpider_B_LB_leg
+  - first:
+      4: 400014
+    second: EnemySpider_B_LF_leg
+  - first:
+      4: 400016
+    second: EnemySpider_B_RB_leg
+  - first:
+      4: 400018
+    second: EnemySpider_B_RF_leg
+  - first:
+      4: 400020
+    second: EnemySpider_body
+  - first:
+      4: 400022
+    second: EnemySpider_C_LB_leg
+  - first:
+      4: 400024
+    second: EnemySpider_C_LF_leg
+  - first:
+      4: 400026
+    second: EnemySpider_C_RB_leg
+  - first:
+      4: 400028
+    second: EnemySpider_C_RF_leg
+  - first:
+      4: 400030
+    second: EnemySpider_LB_leg
+  - first:
+      4: 400032
+    second: EnemySpider_LF_leg
+  - first:
+      4: 400034
+    second: EnemySpider_main_root
+  - first:
+      4: 400036
+    second: EnemySpider_RB_leg
+  - first:
+      4: 400038
+    second: EnemySpider_RF_leg
+  - first:
+      4: 400040
+    second: EnemySpider_waist
+  - first:
+      21: 2100000
+    second: blinn5
+  - first:
+      23: 2300000
+    second: EnemySpider_A_LB_leg
+  - first:
+      23: 2300002
+    second: EnemySpider_A_LF_leg
+  - first:
+      23: 2300004
+    second: EnemySpider_A_RB_leg
+  - first:
+      23: 2300006
+    second: EnemySpider_A_RF_leg
+  - first:
+      23: 2300008
+    second: EnemySpider_B_LB_leg
+  - first:
+      23: 2300010
+    second: EnemySpider_B_LF_leg
+  - first:
+      23: 2300012
+    second: EnemySpider_B_RB_leg
+  - first:
+      23: 2300014
+    second: EnemySpider_B_RF_leg
+  - first:
+      23: 2300016
+    second: EnemySpider_body
+  - first:
+      23: 2300018
+    second: EnemySpider_C_LB_leg
+  - first:
+      23: 2300020
+    second: EnemySpider_C_LF_leg
+  - first:
+      23: 2300022
+    second: EnemySpider_C_RB_leg
+  - first:
+      23: 2300024
+    second: EnemySpider_C_RF_leg
+  - first:
+      23: 2300026
+    second: EnemySpider_waist
+  - first:
+      33: 3300000
+    second: EnemySpider_A_LB_leg
+  - first:
+      33: 3300002
+    second: EnemySpider_A_LF_leg
+  - first:
+      33: 3300004
+    second: EnemySpider_A_RB_leg
+  - first:
+      33: 3300006
+    second: EnemySpider_A_RF_leg
+  - first:
+      33: 3300008
+    second: EnemySpider_B_LB_leg
+  - first:
+      33: 3300010
+    second: EnemySpider_B_LF_leg
+  - first:
+      33: 3300012
+    second: EnemySpider_B_RB_leg
+  - first:
+      33: 3300014
+    second: EnemySpider_B_RF_leg
+  - first:
+      33: 3300016
+    second: EnemySpider_body
+  - first:
+      33: 3300018
+    second: EnemySpider_C_LB_leg
+  - first:
+      33: 3300020
+    second: EnemySpider_C_LF_leg
+  - first:
+      33: 3300022
+    second: EnemySpider_C_RB_leg
+  - first:
+      33: 3300024
+    second: EnemySpider_C_RF_leg
+  - first:
+      33: 3300026
+    second: EnemySpider_waist
+  - first:
+      43: 4300000
+    second: EnemySpider_waist
+  - first:
+      43: 4300002
+    second: EnemySpider_body
+  - first:
+      43: 4300004
+    second: EnemySpider_A_RB_leg
+  - first:
+      43: 4300006
+    second: EnemySpider_B_RB_leg
+  - first:
+      43: 4300008
+    second: EnemySpider_C_RB_leg
+  - first:
+      43: 4300010
+    second: EnemySpider_A_LB_leg
+  - first:
+      43: 4300012
+    second: EnemySpider_B_LB_leg
+  - first:
+      43: 4300014
+    second: EnemySpider_C_LB_leg
+  - first:
+      43: 4300016
+    second: EnemySpider_A_RF_leg
+  - first:
+      43: 4300018
+    second: EnemySpider_B_RF_leg
+  - first:
+      43: 4300020
+    second: EnemySpider_C_RF_leg
+  - first:
+      43: 4300022
+    second: EnemySpider_A_LF_leg
+  - first:
+      43: 4300024
+    second: EnemySpider_B_LF_leg
+  - first:
+      43: 4300026
+    second: EnemySpider_C_LF_leg
+  - first:
+      95: 9500000
+    second: //RootNode
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -98,7 +268,7 @@ ModelImporter:
       name: blinn5
     second: {fileID: 2100000, guid: e17b8ab313c734bc79119b70e019624d, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -107,6 +277,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -115,7 +286,11 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 3
+    aCLCompressionLevel: 3
+    aCLCurvePrecision: 0.01
+    aCLFastSampleMode: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -123,40 +298,240 @@ ModelImporter:
     extraExposedTransformPaths: []
     extraUserProperties: []
     clipAnimations: []
-    isReadable: 1
+    isReadable: 0
+    tuanjieGIEnable: 0
+    tuanjieGIGenSDFFactor: 1
+    tuanjieGIGenSDFBias: 0.25
+    tuanjieGIDoubleSidedMode: 0
+    tuanjieGIGenFacetNums: 12
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
+    totalVerticesCount: 5970
+    totalTrianglesCount: 5090
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
+  virtualGeometry:
+    virtualGeometry: 0
+    virtualGeometrySettings:
+      serializedVersion: 1
+      generateGeometryBuffer: 0
+      surfaceCompensation: 0
+      allMeshUse: 1
+      generateMeshProxy: 0
+      selectedMeshProxyLODFactor: 0.15
+      ignoreSimpleMesh: 0
+      transformScaleState: 0
+      isPossibleOverflow: 0
+      hasBoneData: 0
+      isBoneCountOverflow: 0
+      hasMaterialIncompatible: 0
+      perMeshControl: 0
+    virtualGeometryPlatformSettings:
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: DefaultVirtualGeometryPlatform
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: Standalone
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: iPhone
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: Android
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    virtualGeometryMeshDatas:
+    - meshName: EnemySpider_waist
+      meshIndex: 0
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: EnemySpider_body
+      meshIndex: 1
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: EnemySpider_A_RB_leg
+      meshIndex: 2
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: EnemySpider_B_RB_leg
+      meshIndex: 3
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: EnemySpider_C_RB_leg
+      meshIndex: 4
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: EnemySpider_A_LB_leg
+      meshIndex: 5
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: EnemySpider_B_LB_leg
+      meshIndex: 6
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: EnemySpider_C_LB_leg
+      meshIndex: 7
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: EnemySpider_A_RF_leg
+      meshIndex: 8
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: EnemySpider_B_RF_leg
+      meshIndex: 9
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: EnemySpider_C_RF_leg
+      meshIndex: 10
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: EnemySpider_A_LF_leg
+      meshIndex: 11
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: EnemySpider_B_LF_leg
+      meshIndex: 12
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: EnemySpider_C_LF_leg
+      meshIndex: 13
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
+  overrideDefaultPose: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
+    namedPoseList:
+    - name: Default
+      skeleton: []
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -164,14 +539,20 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    defaultPoseIndex: -1
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: caeffedc34d9f4161b7694ad0d84bbd3
 ModelImporter:
-  serializedVersion: 22200
+  serializedVersion: 22361
   internalIDToNameTable:
   - first:
       43: 4300000
@@ -190,6 +190,9 @@ ModelImporter:
     importAnimatedCustomProperties: 0
     importConstraints: 0
     animationCompression: 1
+    aCLCompressionLevel: 3
+    aCLCurvePrecision: 0.01
+    aCLFastSampleMode: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -197,11 +200,18 @@ ModelImporter:
     extraExposedTransformPaths: []
     extraUserProperties: []
     clipAnimations: []
-    isReadable: 1
+    isReadable: 0
+    tuanjieGIEnable: 0
+    tuanjieGIGenSDFFactor: 1
+    tuanjieGIGenSDFBias: 0.25
+    tuanjieGIDoubleSidedMode: 0
+    tuanjieGIGenFacetNums: 12
   meshes:
     lODScreenPercentages: []
     globalScale: 0.013
     meshCompression: 0
+    totalVerticesCount: 1278
+    totalTrianglesCount: 972
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
@@ -234,6 +244,150 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 0
     strictVertexDataChecks: 0
+  virtualGeometry:
+    virtualGeometry: 0
+    virtualGeometrySettings:
+      serializedVersion: 1
+      generateGeometryBuffer: 0
+      surfaceCompensation: 0
+      allMeshUse: 1
+      generateMeshProxy: 0
+      selectedMeshProxyLODFactor: 0.15
+      ignoreSimpleMesh: 0
+      transformScaleState: 0
+      isPossibleOverflow: 0
+      hasBoneData: 0
+      isBoneCountOverflow: 0
+      hasMaterialIncompatible: 0
+      perMeshControl: 0
+    virtualGeometryPlatformSettings:
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: DefaultVirtualGeometryPlatform
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: Standalone
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: iPhone
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: Android
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    virtualGeometryMeshDatas:
+    - meshName: minebot_main
+      meshIndex: 0
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: minebot_right_upperleg
+      meshIndex: 1
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: minebot_right_lowerleg
+      meshIndex: 2
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: minebot_head
+      meshIndex: 3
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: minebot_front_upperleg
+      meshIndex: 4
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: minebot_back_lowerleg
+      meshIndex: 5
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: minebot_left_upperleg
+      meshIndex: 6
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: minebot_left_lowerleg
+      meshIndex: 7
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: minebot_front_upperleg
+      meshIndex: 8
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: minebot_front_lowerleg
+      meshIndex: 9
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -249,10 +403,14 @@ ModelImporter:
   - b667956babf1f0446a76fa8b99404ab8
   - f8136785e54fd1d459d2a3a0849fe770
   importAnimation: 1
+  overrideDefaultPose: 0
   humanDescription:
     serializedVersion: 3
     human: []
     skeleton: []
+    namedPoseList:
+    - name: Default
+      skeleton: []
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -262,6 +420,7 @@ ModelImporter:
     feetSpacing: 0
     globalScale: 0.013
     rootMotionBoneName: 
+    defaultPoseIndex: -1
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1

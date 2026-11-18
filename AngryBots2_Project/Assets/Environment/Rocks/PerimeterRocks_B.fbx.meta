@@ -1,31 +1,77 @@
 fileFormatVersion: 2
 guid: c3d376a8025dd274bbdc9ec7f630811f
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: pasted__Box0010
-    100002: pasted__Box003
-    100004: pasted__Box009
-    100006: PerimeterRocks
-    100008: PerimeterRocks_B
-    100010: //RootNode
-    400000: pasted__Box0010
-    400002: pasted__Box003
-    400004: pasted__Box009
-    400006: PerimeterRocks
-    400008: PerimeterRocks_B
-    400010: //RootNode
-    2100000: CliffRock_B_mat
-    2300000: pasted__Box0010
-    2300002: pasted__Box003
-    2300004: pasted__Box009
-    3300000: pasted__Box0010
-    3300002: pasted__Box003
-    3300004: pasted__Box009
-    4300000: pasted__Box003
-    4300002: pasted__Box009
-    4300004: pasted__Box0010
-    9500000: //RootNode
+  serializedVersion: 22361
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: pasted__Box0010
+  - first:
+      1: 100002
+    second: pasted__Box003
+  - first:
+      1: 100004
+    second: pasted__Box009
+  - first:
+      1: 100006
+    second: PerimeterRocks
+  - first:
+      1: 100008
+    second: PerimeterRocks_B
+  - first:
+      1: 100010
+    second: //RootNode
+  - first:
+      4: 400000
+    second: pasted__Box0010
+  - first:
+      4: 400002
+    second: pasted__Box003
+  - first:
+      4: 400004
+    second: pasted__Box009
+  - first:
+      4: 400006
+    second: PerimeterRocks
+  - first:
+      4: 400008
+    second: PerimeterRocks_B
+  - first:
+      4: 400010
+    second: //RootNode
+  - first:
+      21: 2100000
+    second: CliffRock_B_mat
+  - first:
+      23: 2300000
+    second: pasted__Box0010
+  - first:
+      23: 2300002
+    second: pasted__Box003
+  - first:
+      23: 2300004
+    second: pasted__Box009
+  - first:
+      33: 3300000
+    second: pasted__Box0010
+  - first:
+      33: 3300002
+    second: pasted__Box003
+  - first:
+      33: 3300004
+    second: pasted__Box009
+  - first:
+      43: 4300000
+    second: pasted__Box003
+  - first:
+      43: 4300002
+    second: pasted__Box009
+  - first:
+      43: 4300004
+    second: pasted__Box0010
+  - first:
+      95: 9500000
+    second: //RootNode
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -33,7 +79,7 @@ ModelImporter:
       name: CliffRock_B_mat
     second: {fileID: 2100000, guid: 4d9f88fe2aeb59542bb7dd9fd1539fd4, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -42,6 +88,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -52,6 +99,9 @@ ModelImporter:
     importAnimatedCustomProperties: 0
     importConstraints: 0
     animationCompression: 1
+    aCLCompressionLevel: 3
+    aCLCurvePrecision: 0.01
+    aCLFastSampleMode: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -59,32 +109,145 @@ ModelImporter:
     extraExposedTransformPaths: []
     extraUserProperties: []
     clipAnimations: []
-    isReadable: 1
+    isReadable: 0
+    tuanjieGIEnable: 0
+    tuanjieGIGenSDFFactor: 1
+    tuanjieGIGenSDFBias: 0.25
+    tuanjieGIDoubleSidedMode: 0
+    tuanjieGIGenFacetNums: 12
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
+    totalVerticesCount: 7742
+    totalTrianglesCount: 7905
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 1
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
     indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 0
-    previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 1
+    strictVertexDataChecks: 0
+  virtualGeometry:
+    virtualGeometry: 0
+    virtualGeometrySettings:
+      serializedVersion: 1
+      generateGeometryBuffer: 0
+      surfaceCompensation: 0
+      allMeshUse: 1
+      generateMeshProxy: 0
+      selectedMeshProxyLODFactor: 0.15
+      ignoreSimpleMesh: 0
+      transformScaleState: -1
+      isPossibleOverflow: 0
+      hasBoneData: 0
+      isBoneCountOverflow: 0
+      hasMaterialIncompatible: 0
+      perMeshControl: 0
+    virtualGeometryPlatformSettings:
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: DefaultVirtualGeometryPlatform
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: Standalone
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: iPhone
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: Android
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    virtualGeometryMeshDatas:
+    - meshName: pasted__Box003
+      meshIndex: 0
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: pasted__Box009
+      meshIndex: 1
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: pasted__Box0010
+      meshIndex: 2
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -93,12 +256,16 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 0
-  copyAvatar: 0
+  overrideDefaultPose: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
+    namedPoseList:
+    - name: Default
+      skeleton: []
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -106,13 +273,20 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
+    defaultPoseIndex: -1
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 0
   humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

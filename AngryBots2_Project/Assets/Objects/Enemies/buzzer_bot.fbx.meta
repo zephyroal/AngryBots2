@@ -1,83 +1,287 @@
 fileFormatVersion: 2
 guid: 4c3741f92cecb5149acd928b39888247
 ModelImporter:
-  fileIDToRecycleName:
-    4300000: Cylinder002
-    4300002: Line001
-    4300004: Box001
-    4300006: electric_buzzer_main
-    4300008: electric_buzzer_right_propellerarm
-    4300010: electric_buzzer_plasmapropeller
-    4300012: electric_buzzer_plasma_right
-    4300014: electric_buzzer_buzzgun
-    4300016: electric_buzzer_right_propellerarm001
-    4300018: electric_buzzer_plasmapropeller001
-    4300020: electric_buzzer_plasma_right001
-    4300022: Object004
-    4300024: buzzerbot_mainbody
-    4300026: electric_buzzer_plasma
-    4300028: buzzer
-    100100000: DataTemplate __Singleton__
-  serializedVersion: 10
+  serializedVersion: 22361
+  internalIDToNameTable:
+  - first:
+      43: 4300000
+    second: Cylinder002
+  - first:
+      43: 4300002
+    second: Line001
+  - first:
+      43: 4300004
+    second: Box001
+  - first:
+      43: 4300006
+    second: electric_buzzer_main
+  - first:
+      43: 4300008
+    second: electric_buzzer_right_propellerarm
+  - first:
+      43: 4300010
+    second: electric_buzzer_plasmapropeller
+  - first:
+      43: 4300012
+    second: electric_buzzer_plasma_right
+  - first:
+      43: 4300014
+    second: electric_buzzer_buzzgun
+  - first:
+      43: 4300016
+    second: electric_buzzer_right_propellerarm001
+  - first:
+      43: 4300018
+    second: electric_buzzer_plasmapropeller001
+  - first:
+      43: 4300020
+    second: electric_buzzer_plasma_right001
+  - first:
+      43: 4300022
+    second: Object004
+  - first:
+      43: 4300024
+    second: buzzerbot_mainbody
+  - first:
+      43: 4300026
+    second: electric_buzzer_plasma
+  - first:
+      43: 4300028
+    second: buzzer
+  - first:
+      1001: 100100000
+    second: DataTemplate __Singleton__
+  - first:
+      1: 100000
+    second: //RootNode
+  - first:
+      4: 400000
+    second: //RootNode
+  - first:
+      33: 3300000
+    second: //RootNode
+  - first:
+      23: 2300000
+    second: //RootNode
+  - first:
+      111: 11100000
+    second: //RootNode
+  - first:
+      1: 100004
+    second: electric_buzzer_plasma
+  - first:
+      4: 400004
+    second: electric_buzzer_plasma
+  - first:
+      33: 3300002
+    second: electric_buzzer_plasma
+  - first:
+      23: 2300002
+    second: electric_buzzer_plasma
+  externalObjects: {}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 3
     materialSearch: 1
+    materialLocation: 0
   animations:
-    generateAnimations: 3
+    legacyGenerateAnimations: 3
     bakeSimulation: 0
-    splitAnimations: 1
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
-    animationRotationError: 0.500000
-    animationPositionError: 0.500000
-    animationScaleError: 0.500000
+    aCLCompressionLevel: 3
+    aCLCurvePrecision: 0.01
+    aCLFastSampleMode: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
+    isReadable: 0
+    tuanjieGIEnable: 0
+    tuanjieGIGenSDFFactor: 1
+    tuanjieGIGenSDFBias: 0.25
+    tuanjieGIDoubleSidedMode: 0
+    tuanjieGIGenFacetNums: 12
   meshes:
     lODScreenPercentages: []
-    globalScale: 1.000000
+    globalScale: 1
     meshCompression: 0
+    totalVerticesCount: 2022
+    totalTrianglesCount: 1318
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 1
     useFileUnits: 1
-    meshOptimization: 4
-    secondaryUVAngleDistortion: 8.000000
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
+    secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
-    secondaryUVHardAngle: 88.000000
-    secondaryUVPackMargin: 4.000000
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+    strictVertexDataChecks: 0
+  virtualGeometry:
+    virtualGeometry: 0
+    virtualGeometrySettings:
+      serializedVersion: 1
+      generateGeometryBuffer: 0
+      surfaceCompensation: 0
+      allMeshUse: 1
+      generateMeshProxy: 0
+      selectedMeshProxyLODFactor: 0.15
+      ignoreSimpleMesh: 0
+      transformScaleState: 1
+      isPossibleOverflow: 0
+      hasBoneData: 0
+      isBoneCountOverflow: 0
+      hasMaterialIncompatible: 0
+      perMeshControl: 0
+    virtualGeometryPlatformSettings:
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: DefaultVirtualGeometryPlatform
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: Standalone
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: iPhone
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    - serializedVersion: 0
+      overridden: 0
+      ignorePlatformSupport: 0
+      buildTarget: Android
+      positionPrecision: -2147483648
+      normalPrecision: -2147483648
+      tangentPrecision: -2147483648
+      boneWeightPrecision: -2147483648
+      detailedTriangleCount: 0
+      detailedVertexCount: 0
+      rootPageSize: 0
+      streamablePageSize: 0
+      reserveTrianglePercent: 100
+      reserveDetailLevel: 0
+    virtualGeometryMeshDatas:
+    - meshName: buzzer
+      meshIndex: 0
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
+    - meshName: electric_buzzer_plasma
+      meshIndex: 1
+      instantiatedIndex: 0
+      lODMeshIndex: 0
+      lODLevel: 0
+      generateVirtualGeometry: 1
+      generateGeometryBuffer: 0
   tangentSpace:
-    normalSmoothAngle: 60.000000
-    splitTangentsAcrossUV: 1
+    normalSmoothAngle: 60
     normalImportMode: 0
-    tangentImportMode: 1
-  textMetaNamesToFileIDs:
-    //RootNode:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
-      data:
-        first: 111
-        second: 605fa900
-    electric_buzzer_plasma:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-      data:
-        first: 23
-        second: 62182300
-      data:
-        first: 33
-        second: a25a3200
+    tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  overrideDefaultPose: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    namedPoseList:
+    - name: Default
+      skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    defaultPoseIndex: -1
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 1
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
