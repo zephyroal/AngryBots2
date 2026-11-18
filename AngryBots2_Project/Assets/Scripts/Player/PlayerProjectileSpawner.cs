@@ -42,7 +42,7 @@ public class PlayerProjectileSpawner : MonoBehaviour {
 	void SpawnProjectile()
 	{
 		timer = 0f;
-		Instantiate(projectilePrefab, spawnPoint.position, spawnPoint.rotation);
+		PoolManager.Spawn(projectilePrefab, spawnPoint.position, spawnPoint.rotation);
 
 		if(spawnParticles)
 		{

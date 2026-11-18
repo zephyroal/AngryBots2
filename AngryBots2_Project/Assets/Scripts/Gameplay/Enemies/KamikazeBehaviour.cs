@@ -247,7 +247,7 @@ namespace ABGameplay.Enemies
 			}
 
 			if (explosionEffect != null)
-				Instantiate(explosionEffect, center, Quaternion.identity);
+				VfxPool.Spawn(explosionEffect, center, Quaternion.identity);
 			if (explosionClip != null)
 				AudioSource.PlayClipAtPoint(explosionClip, center);
 

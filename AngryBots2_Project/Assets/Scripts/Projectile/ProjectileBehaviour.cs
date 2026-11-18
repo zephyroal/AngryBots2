@@ -29,12 +29,28 @@ public class ProjectileBehaviour : MonoBehaviour {
 	private int bounceCount = 0;
 
 
-	void Start()
+	void Awake()
 	{
 		projectileRigidbody = GetComponent<Rigidbody>();
-		Invoke("RemoveProjectile", lifeTime);
 	}
-	
+
+	// 池化：每次从池里取出（SetActive(true)）都会走 OnEnable，这里重置状态并重新计时。
+	void OnEnable()
+	{
+		bounceCount = 0;
+		if (projectileRigidbody != null)
+		{
+			projectileRigidbody.velocity = Vector3.zero;
+			projectileRigidbody.angularVelocity = Vector3.zero;
+		}
+		if (lifeTime > 0f) Invoke("RemoveProjectile", lifeTime);
+	}
+
+	void OnDisable()
+	{
+		CancelInvoke();
+	}
+
 	void OnTriggerEnter(Collider theCollider)
 	{	
 		// 如果碰到敌人
@@ -47,7 +63,7 @@ public class ProjectileBehaviour : MonoBehaviour {
 
 			if (EnemyHit != null) EnemyHit(transform.position);
 
-			Instantiate(hitEnemyParticles, transform.position, transform.rotation);
+			VfxPool.Spawn(hitEnemyParticles, transform.position, transform.rotation);
 			RemoveProjectile();
 
 		}
@@ -60,7 +76,7 @@ public class ProjectileBehaviour : MonoBehaviour {
 			}
 			else
 			{
-				Instantiate(hitWallParticles, transform.position, transform.rotation);
+				VfxPool.Spawn(hitWallParticles, transform.position, transform.rotation);
 				RemoveProjectile();
 			}
 		}
@@ -99,7 +115,7 @@ public class ProjectileBehaviour : MonoBehaviour {
 		// 播放反弹粒子效果
 		if (hitWallParticles != null)
 		{
-			Instantiate(hitWallParticles, transform.position, Quaternion.LookRotation(reflectDirection));
+			VfxPool.Spawn(hitWallParticles, transform.position, Quaternion.LookRotation(reflectDirection));
 		}
 	}
 	
@@ -111,7 +127,8 @@ public class ProjectileBehaviour : MonoBehaviour {
 
 	void RemoveProjectile()
 	{
-		Destroy(gameObject);
+		// 池化对象归还复用；非池化对象 PoolManager 会退化为 Destroy。
+		PoolManager.Despawn(gameObject);
 	}
 
 }

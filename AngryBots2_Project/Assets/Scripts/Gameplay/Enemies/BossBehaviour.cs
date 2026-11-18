@@ -395,7 +395,7 @@ namespace ABGameplay.Enemies
 			float radius = Mathf.Max(1f, phase.slamRadius);
 			Vector3 center = transform.position;
 
-			if (slamEffect != null) Instantiate(slamEffect, center, Quaternion.identity);
+			if (slamEffect != null) VfxPool.Spawn(slamEffect, center, Quaternion.identity);
 
 			HitFeedback.EnsureInstance().TriggerShake(0.12f);
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -15,6 +16,8 @@ public class WeaponSystem : MonoBehaviour
 	public GameObject projectilePrefab;
 	public Transform spawnPoint;
 	public ParticleSystem muzzleParticles;
+	[Tooltip("枪口粒子的根节点。可直接指向嵌套预制体暴露出来的根 Transform；为空时按名称自动查找。")]
+	public Transform muzzleFlashRoot;
 	public AudioSource fireAudio;
 	public GameObject grenadePrefab;
 
@@ -165,6 +168,101 @@ public class WeaponSystem : MonoBehaviour
 				if (t.name.Contains("SpawnPoint")) { spawnPoint = t; break; }
 			}
 		}
+
+		ResolveMuzzleFlash();
+	}
+
+	// ------------------------------------------------------------------
+	// 枪口特效
+	// ------------------------------------------------------------------
+
+	ParticleSystem[] muzzleFlashSystems;
+	bool muzzleFlashLookupDone;
+
+	/// <summary>当前解析到的枪口粒子系统数量（供自检 / 调试使用）。</summary>
+	public int MuzzleFlashSystemCount
+	{
+		get { EnsureMuzzleFlashResolved(); return muzzleFlashSystems != null ? muzzleFlashSystems.Length : 0; }
+	}
+
+	/// <summary>枪口粒子根节点（解析成功后回填，便于 Inspector 里看到）。</summary>
+	public Transform ResolvedMuzzleFlashRoot { get { EnsureMuzzleFlashResolved(); return muzzleFlashRoot; } }
+
+	void ResolveMuzzleFlash()
+	{
+		if (muzzleFlashSystems != null && muzzleFlashSystems.Length > 0) return;
+
+		// 直接引用优先；没有就按名字找，兼容「枪口粒子是嵌套预制体、内部组件无法被外部资产引用」的情况。
+		if (muzzleFlashRoot == null) muzzleFlashRoot = FindMuzzleFlashRoot();
+
+		var systems = new List<ParticleSystem>();
+		if (muzzleParticles != null) systems.Add(muzzleParticles);
+		if (muzzleFlashRoot != null)
+		{
+			foreach (var ps in muzzleFlashRoot.GetComponentsInChildren<ParticleSystem>(true))
+			{
+				if (ps != null && !systems.Contains(ps)) systems.Add(ps);
+			}
+		}
+
+		if (systems.Count > 0)
+		{
+			muzzleFlashSystems = systems.ToArray();
+			muzzleFlashLookupDone = true;
+		}
+		else
+		{
+			muzzleFlashLookupDone = true;
+			Debug.LogWarning("[WeaponSystem] 没找到枪口粒子系统（muzzleParticles / muzzleFlashRoot 都为空）", this);
+		}
+	}
+
+	void EnsureMuzzleFlashResolved()
+	{
+		if (muzzleFlashSystems != null && muzzleFlashSystems.Length > 0) return;
+		if (muzzleFlashLookupDone) return;
+		ResolveMuzzleFlash();
+	}
+
+	Transform FindMuzzleFlashRoot()
+	{
+		Transform best = null;
+		int bestDepth = int.MaxValue;
+
+		foreach (var t in GetComponentsInChildren<Transform>(true))
+		{
+			if (t == null || t == transform) continue;
+			if (t.name.IndexOf("muzzleflash", StringComparison.OrdinalIgnoreCase) < 0) continue;
+			if (t.GetComponentInChildren<ParticleSystem>(true) == null) continue;
+
+			int depth = 0;
+			for (var p = t.parent; p != null && p != transform; p = p.parent) depth++;
+			if (best == null || depth < bestDepth)
+			{
+				best = t;
+				bestDepth = depth;
+			}
+		}
+
+		return best;
+	}
+
+	/// <summary>
+	/// 逐发重播枪口特效。粒子系统已经在播放时 <c>Play()</c> 是空操作，
+	/// 连发（SMG 0.07s）会因此漏闪，所以每次先清空再播放。
+	/// </summary>
+	public void PlayMuzzleFlash()
+	{
+		EnsureMuzzleFlashResolved();
+		if (muzzleFlashSystems == null) return;
+
+		for (int i = 0; i < muzzleFlashSystems.Length; i++)
+		{
+			var ps = muzzleFlashSystems[i];
+			if (ps == null) continue;
+			ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+			ps.Play();
+		}
 	}
 
 	bool ammoInitialized;
@@ -185,6 +283,13 @@ public class WeaponSystem : MonoBehaviour
 
 	void Start()
 	{
+		// 运行时升级成 WeaponSystemAdapter 时，字段是在 Awake 之后才拷贝进来的，这里补一次解析。
+		if (muzzleFlashSystems == null || muzzleFlashSystems.Length == 0)
+		{
+			muzzleFlashLookupDone = false;
+			ResolveMuzzleFlash();
+		}
+
 		RaiseAmmoChanged();
 	}
 
@@ -242,7 +347,7 @@ public class WeaponSystem : MonoBehaviour
 			SpawnProjectile(smgDamage, smgSpread, 1);
 		}
 
-		if (muzzleParticles != null) muzzleParticles.Play();
+		PlayMuzzleFlash();
 		if (fireAudio != null) fireAudio.Play();
 		RaiseAmmoChanged();
 
@@ -297,7 +402,8 @@ public class WeaponSystem : MonoBehaviour
 
 		Vector3 position = spawnPoint != null ? spawnPoint.position : transform.position + Vector3.up * 1.2f;
 		Quaternion rotation = spawnPoint != null ? spawnPoint.rotation : transform.rotation;
-		var grenade = Instantiate(grenadePrefab, position, rotation);
+		var grenade = PoolManager.Spawn(grenadePrefab, position, rotation);
+		if (grenade == null) return;
 		var body = grenade.GetComponent<Rigidbody>();
 		if (body != null)
 			body.velocity = (rotation * Vector3.forward) * grenadeThrowForce + Vector3.up * 4f;
@@ -321,7 +427,8 @@ public class WeaponSystem : MonoBehaviour
 				UnityEngine.Random.Range(-spread, spread),
 				0f);
 
-			var projectile = Instantiate(projectilePrefab, spawnPoint.position, rotation);
+			var projectile = PoolManager.Spawn(projectilePrefab, spawnPoint.position, rotation);
+			if (projectile == null) continue;
 			var behaviour = projectile.GetComponent<ProjectileBehaviour>();
 			if (behaviour != null) behaviour.damageToEnemy = damage;
 		}

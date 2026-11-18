@@ -19,9 +19,22 @@ public class GrenadeProjectile : MonoBehaviour
 
 	bool exploded;
 
-	void Start()
+	// 池化：每次取出时重置状态并重新计时。
+	void OnEnable()
 	{
-		Invoke("Explode", fuseTime);
+		exploded = false;
+		var body = GetComponent<Rigidbody>();
+		if (body != null)
+		{
+			body.velocity = Vector3.zero;
+			body.angularVelocity = Vector3.zero;
+		}
+		if (fuseTime > 0f) Invoke("Explode", fuseTime);
+	}
+
+	void OnDisable()
+	{
+		CancelInvoke();
 	}
 
 	void OnCollisionEnter(Collision collision)
@@ -37,7 +50,7 @@ public class GrenadeProjectile : MonoBehaviour
 		exploded = true;
 
 		if (explosionPrefab != null)
-			Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+			VfxPool.Spawn(explosionPrefab, transform.position, Quaternion.identity);
 		if (explosionClip != null)
 			AudioSource.PlayClipAtPoint(explosionClip, transform.position);
 
@@ -48,6 +61,7 @@ public class GrenadeProjectile : MonoBehaviour
 			health.RemoveHealth(damage);
 		}
 
-		Destroy(gameObject);
+		// 池化对象归还复用；非池化对象 PoolManager 会退化为 Destroy。
+		PoolManager.Despawn(gameObject);
 	}
 }

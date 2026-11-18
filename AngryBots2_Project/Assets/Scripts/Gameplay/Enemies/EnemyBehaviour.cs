@@ -466,7 +466,7 @@ namespace ABGameplay.Enemies
 			OnDeath();
 
 			if (definition != null && definition.deathEffectPrefab != null)
-				Instantiate(definition.deathEffectPrefab, transform.position, Quaternion.identity);
+				VfxPool.Spawn(definition.deathEffectPrefab, transform.position, Quaternion.identity);
 
 			Destroy(gameObject, destroyDelay);
 		}

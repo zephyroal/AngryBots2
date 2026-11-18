@@ -14,12 +14,17 @@ public partial class AutoFire : MonoBehaviour
     public float forcePerSecond;
     public float hitSoundVolume;
     public GameObject muzzleFlashFront;
+    [Tooltip("每次开火点亮枪口火焰的时长（秒）。")]
+    public float muzzleFlashDuration = 0.05f;
     private float lastFireTime;
+    private float muzzleFlashHideTime = -1f;
+    private AudioSource fireAudio;
     private PerFrameRaycast raycast;
     public virtual void Awake()
     {
-        this.muzzleFlashFront.SetActive(false);
+        this.HideMuzzleFlash();
         this.raycast = this.GetComponent<PerFrameRaycast>();
+        this.fireAudio = this.GetComponent<AudioSource>();
         if (this.spawnPoint == null)
         {
             this.spawnPoint = this.transform;
@@ -28,15 +33,22 @@ public partial class AutoFire : MonoBehaviour
 
     public virtual void Update()
     {
+        if (this.muzzleFlashHideTime > 0f && Time.time >= this.muzzleFlashHideTime)
+        {
+            this.HideMuzzleFlash();
+        }
+
         if (this.firing)
         {
-            if (Time.time > (this.lastFireTime + (1 / this.frequency)))
+            float interval = this.frequency > 0.01f ? 1f / this.frequency : 0.1f;
+            if (Time.time > (this.lastFireTime + interval))
             {
                 // Spawn visual bullet
                 Quaternion coneRandomRotation = Quaternion.Euler(Random.Range(-this.coneAngle, this.coneAngle), Random.Range(-this.coneAngle, this.coneAngle), 0);
                 GameObject go = Spawner.Spawn(this.bulletPrefab, this.spawnPoint.position, this.spawnPoint.rotation * coneRandomRotation) as GameObject;
                 SimpleBullet bullet = go.GetComponent<SimpleBullet>();
                 this.lastFireTime = Time.time;
+                this.ShowMuzzleFlash();
                 // Find the object hit by the raycast
                 RaycastHit hitInfo = this.raycast.GetHitInfo();
                 if (hitInfo.transform)
@@ -55,9 +67,13 @@ public partial class AutoFire : MonoBehaviour
                         Vector3 force = this.transform.forward * (this.forcePerSecond / this.frequency);
                         hitInfo.rigidbody.AddForceAtPosition(force, hitInfo.point, ForceMode.Impulse);
                     }
-                    // Ricochet sound
+                    // Ricochet sound（复用枪上的 AudioSource，避免每次命中都新建/销毁临时 GameObject）
                     AudioClip sound = MaterialImpactManager.GetBulletHitSound(hitInfo.collider.sharedMaterial);
-                    AudioSource.PlayClipAtPoint(sound, hitInfo.point, this.hitSoundVolume);
+                    if (sound != null)
+                    {
+                        if (this.fireAudio != null) this.fireAudio.PlayOneShot(sound, this.hitSoundVolume);
+                        else AudioSource.PlayClipAtPoint(sound, hitInfo.point, this.hitSoundVolume);
+                    }
                     bullet.dist = hitInfo.distance;
                 }
                 else
@@ -75,20 +91,43 @@ public partial class AutoFire : MonoBehaviour
             return;
         }
         this.firing = true;
-        this.muzzleFlashFront.SetActive(true);
-        if (this.GetComponent<AudioSource>())
+        this.ShowMuzzleFlash();
+        if (this.fireAudio != null)
         {
-            this.GetComponent<AudioSource>().Play();
+            this.fireAudio.Play();
         }
     }
 
     public virtual void OnStopFire()
     {
         this.firing = false;
-        this.muzzleFlashFront.SetActive(false);
-        if (this.GetComponent<AudioSource>())
+        this.HideMuzzleFlash();
+        if (this.fireAudio != null)
         {
-            this.GetComponent<AudioSource>().Stop();
+            this.fireAudio.Stop();
+        }
+    }
+
+    /// <summary>按住扳机时按开火频率逐发闪光，而不是一直亮着。</summary>
+    void ShowMuzzleFlash()
+    {
+        if (this.muzzleFlashFront == null)
+        {
+            return;
+        }
+        if (!this.muzzleFlashFront.activeSelf)
+        {
+            this.muzzleFlashFront.SetActive(true);
+        }
+        this.muzzleFlashHideTime = Time.time + Mathf.Max(0.01f, this.muzzleFlashDuration);
+    }
+
+    void HideMuzzleFlash()
+    {
+        this.muzzleFlashHideTime = -1f;
+        if (this.muzzleFlashFront != null && this.muzzleFlashFront.activeSelf)
+        {
+            this.muzzleFlashFront.SetActive(false);
         }
     }
 
