@@ -54,7 +54,8 @@ namespace ABGameplay
 				{
 					weapons.projectilePrefab = legacySpawner.projectilePrefab;
 					weapons.spawnPoint = legacySpawner.spawnPoint;
-					weapons.muzzleParticles = legacySpawner.spawnParticles;
+					// 枪口粒子是嵌套预制体内的组件，外部资产无法直接引用；只保留有效引用，其余运行时按名字解析。
+					if (weapons.muzzleParticles == null) weapons.muzzleParticles = legacySpawner.spawnParticles;
 					weapons.fireAudio = legacySpawner.spawnAudioSource;
 					legacySpawner.enabled = false;
 					Debug.Log("[ABGameplay] WeaponSystem wired from " + legacySpawner.name);
@@ -62,6 +63,18 @@ namespace ABGameplay
 				else
 				{
 					Debug.LogWarning("[ABGameplay] Player prefab 里没有 PlayerProjectileSpawner");
+				}
+
+				if (weapons.muzzleFlashRoot == null)
+				{
+					foreach (var t in root.GetComponentsInChildren<Transform>(true))
+					{
+						if (t.name.IndexOf("muzzleflash", System.StringComparison.OrdinalIgnoreCase) < 0) continue;
+						if (t.GetComponentInChildren<ParticleSystem>(true) == null) continue;
+						weapons.muzzleFlashRoot = t;
+						Debug.Log("[ABGameplay] muzzleFlashRoot = " + t.name);
+						break;
+					}
 				}
 
 				weapons.grenadePrefab = grenadePrefab;

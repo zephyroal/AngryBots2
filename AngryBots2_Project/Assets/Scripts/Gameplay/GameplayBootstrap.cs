@@ -200,6 +200,7 @@ public sealed class GameplayBootstrap : MonoBehaviour
 		destination.projectilePrefab = source.projectilePrefab;
 		destination.spawnPoint = source.spawnPoint;
 		destination.muzzleParticles = source.muzzleParticles;
+		destination.muzzleFlashRoot = source.muzzleFlashRoot;
 		destination.fireAudio = source.fireAudio;
 		destination.grenadePrefab = source.grenadePrefab;
 
