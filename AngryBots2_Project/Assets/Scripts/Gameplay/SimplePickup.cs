@@ -24,10 +24,14 @@ public sealed class SimplePickup : MonoBehaviour
 		Ammo = 1,
 		Grenade = 2,
 		Score = 3,
+		PowerUp = 4,
 	}
 
 	[Header("Pickup")]
 	public PickupType type = PickupType.Health;
+
+	[Tooltip("PowerUp 类型拾取时授予的增益种类。")]
+	public PowerUpKind powerUpKind = PowerUpKind.DamageBoost;
 
 	[Tooltip("拾取量。Health 为血量，Ammo 为步枪/霰弹枪各补的弹药，Grenade 为手雷个数。")]
 	public int amount = 30;
@@ -125,12 +129,21 @@ public sealed class SimplePickup : MonoBehaviour
 				GameEvents.RaiseScoreChanged(amount, amount);
 				applied = true;
 				break;
+
+			case PickupType.PowerUp:
+				var powerUps = PowerUpSystem.Ensure(player.gameObject);
+				if (powerUps != null)
+				{
+					powerUps.Activate(powerUpKind);
+					applied = true;
+				}
+				break;
 		}
 
 		if (!applied) return false;
 
 		PickupCount++;
-		GameEvents.RaisePickupCollected(type.ToString(), amount);
+		GameEvents.RaisePickupCollected(type == PickupType.PowerUp ? powerUpKind.ToString() : type.ToString(), amount);
 		if (pickupClip != null) AudioSource.PlayClipAtPoint(pickupClip, transform.position);
 
 		if (respawnTime > 0f) StartRespawn();
@@ -217,6 +230,25 @@ public sealed class SimplePickup : MonoBehaviour
 	public static SimplePickup CreateGrenadePack(Vector3 position, int amount = 1, float respawn = 25f)
 	{
 		return Create(position, PickupType.Grenade, amount, respawn, new Color(0.4f, 0.7f, 1f));
+	}
+
+	/// <summary>生成一个临时增益拾取物（默认一次性，拾取后销毁）。</summary>
+	public static SimplePickup CreatePowerUp(PowerUpKind kind, Vector3 position, float respawn = 0f)
+	{
+		var pickup = Create(position, PickupType.PowerUp, 0, respawn, ColorFor(kind));
+		pickup.powerUpKind = kind;
+		pickup.name = "Pickup_PowerUp_" + kind;
+		return pickup;
+	}
+
+	static Color ColorFor(PowerUpKind kind)
+	{
+		switch (kind)
+		{
+			case PowerUpKind.RapidFire: return new Color(1f, 0.55f, 0.15f);
+			case PowerUpKind.Shield: return new Color(0.35f, 0.8f, 1f);
+			default: return new Color(1f, 0.25f, 0.45f);
+		}
 	}
 
 	static SimplePickup Create(Vector3 position, PickupType type, int amount, float respawn, Color color)

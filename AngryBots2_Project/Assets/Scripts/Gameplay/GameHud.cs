@@ -30,6 +30,9 @@ public class GameHud : MonoBehaviour
 	public Image[] hitMarkerParts;
 	public Text waveBanner;
 
+	[Header("Power Ups")]
+	public Text powerUpText;
+
 	/// <summary>命中 / 击杀标记触发次数，便于自动化验证。</summary>
 	public int HitFlashCount { get; private set; }
 	public int KillFlashCount { get; private set; }
@@ -37,6 +40,9 @@ public class GameHud : MonoBehaviour
 	PlayerHealth playerHealth;
 	WeaponSystem weapons;
 	WaveDirector director;
+	PowerUpSystem powerUps;
+	readonly System.Text.StringBuilder powerUpBuilder = new System.Text.StringBuilder(64);
+	float powerUpRefreshTimer;
 
 	float flashAlpha;
 	float hitMarkerAlpha;
@@ -47,12 +53,14 @@ public class GameHud : MonoBehaviour
 	void Start()
 	{
 		EnsureFillSprite();
+		EnsurePowerUpText();
 
 		var player = GameObject.FindGameObjectWithTag("Player");
 		if (player != null)
 		{
 			playerHealth = player.GetComponent<PlayerHealth>();
 			weapons = player.GetComponent<WeaponSystem>();
+			powerUps = player.GetComponent<PowerUpSystem>();
 		}
 
 		director = FindObjectOfType<WaveDirector>();
@@ -88,8 +96,38 @@ public class GameHud : MonoBehaviour
 		if (waveBanner != null) waveBanner.color = new Color(1f, 0.9f, 0.55f, 0f);
 	}
 
-	void EnsureFillSprite()
+	/// <summary>老场景的 HUD 是在编辑器里装配的，没有增益文本时运行期自动补一个，避免要重跑装配脚本。</summary>
+	void EnsurePowerUpText()
 	{
+		if (powerUpText != null) return;
+
+		var canvas = GetComponentInParent<Canvas>();
+		if (canvas == null) canvas = FindObjectOfType<Canvas>();
+		if (canvas == null) return;
+
+		var go = new GameObject("PowerUpText", typeof(RectTransform), typeof(Text));
+		go.transform.SetParent(canvas.transform, false);
+
+		var rect = go.GetComponent<RectTransform>();
+		rect.anchorMin = Vector2.zero;
+		rect.anchorMax = Vector2.zero;
+		rect.pivot = Vector2.zero;
+		rect.anchoredPosition = new Vector2(36f, 100f);
+		rect.sizeDelta = new Vector2(760f, 28f);
+
+		var font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+		if (font == null) font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+
+		var text = go.GetComponent<Text>();
+		text.font = font;
+		text.fontSize = 20;
+		text.alignment = TextAnchor.MiddleLeft;
+		text.color = new Color(0.55f, 0.95f, 1f);
+		text.raycastTarget = false;
+		powerUpText = text;
+	}
+
+	void EnsureFillSprite()	{
 		// Image 没有 Sprite 时会忽略 Filled 模式，血条需要一张最小白色 Sprite。
 		if (healthFill == null || healthFill.sprite != null) return;
 
@@ -141,6 +179,14 @@ public class GameHud : MonoBehaviour
 			if (waveBanner != null) waveBanner.color = new Color(1f, 0.9f, 0.55f, bannerAlpha);
 		}
 
+		// 增益倒计时（0.2s 刷新一次，避免每帧拼字符串）
+		powerUpRefreshTimer -= Time.deltaTime;
+		if (powerUpText != null && powerUpRefreshTimer <= 0f)
+		{
+			powerUpRefreshTimer = 0.2f;
+			RefreshPowerUps();
+		}
+
 		if (director == null) return;
 
 		int seconds = Mathf.CeilToInt(director.TimeLeft);
@@ -161,8 +207,35 @@ public class GameHud : MonoBehaviour
 			director.Restart();
 	}
 
-	void OnHealthChanged(int current, int max)
+	/// <summary>把当前生效的增益与剩余秒数拼成一行（无增益时清空）。</summary>
+	void RefreshPowerUps()
 	{
+		if (powerUpText == null) return;
+
+		if (powerUps == null || !powerUps.AnyActive)
+		{
+			if (powerUpText.text.Length > 0) powerUpText.text = "";
+			return;
+		}
+
+		powerUpBuilder.Length = 0;
+		AppendBuff(PowerUpKind.DamageBoost, "DMG");
+		AppendBuff(PowerUpKind.RapidFire, "RATE");
+		AppendBuff(PowerUpKind.Shield, "SHIELD");
+
+		powerUpText.text = powerUpBuilder.ToString();
+	}
+
+	void AppendBuff(PowerUpKind kind, string label)
+	{
+		float remaining = powerUps.Remaining(kind);
+		if (remaining <= 0f) return;
+
+		if (powerUpBuilder.Length > 0) powerUpBuilder.Append("    ");
+		powerUpBuilder.Append(label).Append(' ').Append(remaining.ToString("0.0")).Append('s');
+	}
+
+	void OnHealthChanged(int current, int max)	{
 		if (healthFill != null)
 		{
 			float ratio = max > 0 ? (float)current / max : 0f;

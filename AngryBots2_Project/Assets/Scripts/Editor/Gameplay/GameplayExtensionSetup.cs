@@ -245,6 +245,11 @@ namespace ABGameplay
 				new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -70f), new Vector2(900f, 40f), TextAnchor.UpperCenter);
 			hintText.color = new Color(1f, 0.85f, 0.4f);
 
+			// 增益倒计时（伤害强化 / 快速射击 / 护盾）
+			var powerUpText = CreateText(canvasObject.transform, "PowerUpText", font, "", 20,
+				new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(36f, 100f), new Vector2(760f, 28f), TextAnchor.MiddleLeft);
+			powerUpText.color = new Color(0.55f, 0.95f, 1f);
+
 			CreateImage(canvasObject.transform, "Crosshair", new Color(1f, 1f, 1f, 0.75f),
 				new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(4f, 4f));
 
@@ -290,6 +295,7 @@ namespace ABGameplay
 			gameHud.resultText = resultText;
 			gameHud.damageFlash = flash;
 			gameHud.hintText = hintText;
+			gameHud.powerUpText = powerUpText;
 			gameHud.hitMarkerParts = new[] { hitMarkerA, hitMarkerB };
 			gameHud.waveBanner = waveBanner;
 

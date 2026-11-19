@@ -328,23 +328,25 @@ public class WeaponSystem : MonoBehaviour
 			return;
 		}
 
+		float rateScale = RateScale();
+
 		if (Mode == WeaponMode.Rifle)
 		{
 			RifleAmmo--;
-			nextFireTime = Time.time + rifleInterval;
-			SpawnProjectile(rifleDamage, rifleSpread, 1);
+			nextFireTime = Time.time + rifleInterval * rateScale;
+			SpawnProjectile(ScaledDamage(rifleDamage), rifleSpread, 1);
 		}
 		else if (Mode == WeaponMode.Shotgun)
 		{
 			ShotgunAmmo--;
-			nextFireTime = Time.time + shotgunInterval;
-			SpawnProjectile(shotgunDamage, shotgunSpread, shotgunPellets);
+			nextFireTime = Time.time + shotgunInterval * rateScale;
+			SpawnProjectile(ScaledDamage(shotgunDamage), shotgunSpread, shotgunPellets);
 		}
 		else
 		{
 			SmgAmmo--;
-			nextFireTime = Time.time + smgInterval;
-			SpawnProjectile(smgDamage, smgSpread, 1);
+			nextFireTime = Time.time + smgInterval * rateScale;
+			SpawnProjectile(ScaledDamage(smgDamage), smgSpread, 1);
 		}
 
 		PlayMuzzleFlash();
@@ -352,6 +354,28 @@ public class WeaponSystem : MonoBehaviour
 		RaiseAmmoChanged();
 
 		if (CurrentMag <= 0) StartReload();
+	}
+
+	// ── 临时增益（PowerUp）接入：未挂 PowerUpSystem 时倍率恒为 1 ──
+	PowerUpSystem powerUps;
+
+	PowerUpSystem ResolvePowerUps()
+	{
+		if (powerUps == null) powerUps = GetComponent<PowerUpSystem>();
+		return powerUps;
+	}
+
+	int ScaledDamage(int baseDamage)
+	{
+		var system = ResolvePowerUps();
+		if (system == null) return baseDamage;
+		return Mathf.Max(1, Mathf.RoundToInt(baseDamage * system.DamageMultiplier));
+	}
+
+	float RateScale()
+	{
+		var system = ResolvePowerUps();
+		return system != null ? system.FireIntervalMultiplier : 1f;
 	}
 
 	public void StartReload()

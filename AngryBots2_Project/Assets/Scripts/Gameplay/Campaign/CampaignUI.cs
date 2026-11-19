@@ -21,6 +21,7 @@ namespace ABGameplay.Campaign
 		Text comboText;
 		Text currencyText;
 		Text statusText;
+		Text powerUpText;
 		Text hintText;
 		string baseHint;
 		float hintOverrideUntil;
@@ -49,6 +50,8 @@ namespace ABGameplay.Campaign
 		UpgradeSystem upgrades;
 		PlayerHealth playerHealth;
 		WeaponSystem weapons;
+		PowerUpSystem powerUps;
+		readonly System.Text.StringBuilder powerUpBuilder = new System.Text.StringBuilder(64);
 
 		bool paused;
 		float refreshTimer;
@@ -137,6 +140,13 @@ namespace ABGameplay.Campaign
 			UiFactory.Anchor(status.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f),
 				new Vector2(32f, 26f), new Vector2(760f, 90f));
 
+			// ─── HUD 左下：增益倒计时（伤害强化 / 快速射击 / 护盾）───
+			var powerUp = UiFactory.CreateText(canvas.transform, "PowerUps", "", 20, TextAnchor.LowerLeft);
+			powerUpText = powerUp;
+			powerUpText.color = new Color(0.55f, 0.95f, 1f);
+			UiFactory.Anchor(powerUp.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f),
+				new Vector2(32f, 118f), new Vector2(760f, 26f));
+
 			var hint = UiFactory.CreateText(canvas.transform, "Hint", "", 20, TextAnchor.LowerCenter);
 			hintText = hint;
 			hintText.color = new Color(0.75f, 0.85f, 0.9f);
@@ -217,8 +227,8 @@ namespace ABGameplay.Campaign
 			UiFactory.Anchor(shopInfo.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
 				new Vector2(0f, 240f), new Vector2(800f, 50f));
 
-			shopLabels = new Text[3];
-			for (int i = 0; i < 3; i++)
+			shopLabels = new Text[4];
+			for (int i = 0; i < 4; i++)
 			{
 				int kindIndex = i;
 				var kind = (UpgradeKind)i;
@@ -310,6 +320,7 @@ namespace ABGameplay.Campaign
 			{
 				playerHealth = player.GetComponent<PlayerHealth>();
 				weapons = player.GetComponent<WeaponSystem>();
+				powerUps = player.GetComponent<PowerUpSystem>();
 			}
 
 			if (mission != null)
@@ -367,6 +378,7 @@ namespace ABGameplay.Campaign
 			if (refreshTimer > 0f) return;
 			refreshTimer = 0.2f;
 			RefreshStatus();
+			RefreshPowerUps();
 			RefreshKillFeed();
 			RefreshBossBar();
 		}
@@ -394,8 +406,34 @@ namespace ABGameplay.Campaign
 			statusText.text = hp + "    " + ammo;
 		}
 
-		void OnObjectiveUpdated(float progress, string text)
+		/// <summary>增益倒计时：DMG / RATE / SHIELD，无增益时清空。</summary>
+		void RefreshPowerUps()
 		{
+			if (powerUpText == null) return;
+
+			if (powerUps == null || !powerUps.AnyActive)
+			{
+				if (powerUpText.text.Length > 0) powerUpText.text = string.Empty;
+				return;
+			}
+
+			powerUpBuilder.Length = 0;
+			AppendBuff(PowerUpKind.DamageBoost, "DMG");
+			AppendBuff(PowerUpKind.RapidFire, "RATE");
+			AppendBuff(PowerUpKind.Shield, "SHIELD");
+			powerUpText.text = powerUpBuilder.ToString();
+		}
+
+		void AppendBuff(PowerUpKind kind, string label)
+		{
+			float remaining = powerUps.Remaining(kind);
+			if (remaining <= 0f) return;
+
+			if (powerUpBuilder.Length > 0) powerUpBuilder.Append("    ");
+			powerUpBuilder.Append(label).Append(' ').Append(remaining.ToString("0.0")).Append('s');
+		}
+
+		void OnObjectiveUpdated(float progress, string text)		{
 			if (objectiveText != null) objectiveText.text = text;
 		}
 
@@ -540,6 +578,8 @@ namespace ABGameplay.Campaign
 			shopLabels[0].text = "WEAPON DAMAGE      LV " + system.GetLevel(UpgradeKind.WeaponDamage) + " / " + system.maxLevel;
 			shopLabels[1].text = "AMMO CAPACITY      LV " + system.GetLevel(UpgradeKind.AmmoCapacity) + " / " + system.maxLevel;
 			shopLabels[2].text = "ARMOR / MAX HP     LV " + system.GetLevel(UpgradeKind.ArmorHealth) + " / " + system.maxLevel;
+			shopLabels[3].text = "POWER-UP DROP +" + Mathf.RoundToInt(system.PowerUpDropBonus * 100f) + "%      LV "
+				+ system.GetLevel(UpgradeKind.PowerUpDrop) + " / " + system.maxLevel;
 
 			for (int i = 0; i < shopLabels.Length; i++)
 			{

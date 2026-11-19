@@ -60,12 +60,24 @@ public class PlayerHealth : MonoBehaviour
 		if (amount <= 0 || IsDead) return;
 		if (Time.time < invulnerableUntil) return;
 
+		amount = ScaleIncomingDamage(amount);
+
 		invulnerableUntil = Time.time + invulnerabilityTime;
 		CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
 		RaiseHealthChanged();
 		if (Damaged != null) Damaged();
 
 		if (CurrentHealth <= 0) Die();
+	}
+
+	PowerUpSystem powerUps;
+
+	/// <summary>护盾增益会把受到的伤害按比例压低；没有该组件时原样返回。</summary>
+	int ScaleIncomingDamage(int amount)
+	{
+		if (powerUps == null) powerUps = GetComponent<PowerUpSystem>();
+		if (powerUps == null) return amount;
+		return Mathf.Max(1, Mathf.RoundToInt(amount * powerUps.IncomingDamageMultiplier));
 	}
 
 	public void Heal(int amount)

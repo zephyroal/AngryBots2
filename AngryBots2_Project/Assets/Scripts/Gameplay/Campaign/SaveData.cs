@@ -31,6 +31,7 @@ namespace ABGameplay.Campaign
 		public int damageLevel;
 		public int ammoLevel;
 		public int healthLevel;
+		public int powerUpLevel;
 
 		// 设置
 		public float sensitivity = 2f;

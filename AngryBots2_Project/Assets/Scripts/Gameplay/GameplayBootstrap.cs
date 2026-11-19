@@ -125,6 +125,7 @@ public sealed class GameplayBootstrap : MonoBehaviour
 
 		if (DamageNumberSpawner.Instance == null) DamageNumberSpawner.EnsureInstance();
 		if (Object.FindObjectOfType<HitFeedback>() == null) HitFeedback.EnsureInstance();
+		PowerUpDropper.EnsureInstance();
 	}
 
 	/// <summary>把场景里所有旧 <c>EnemyHealth</c> 组件升级为 <c>EnemyHealthEx</c>。</summary>
@@ -164,6 +165,9 @@ public sealed class GameplayBootstrap : MonoBehaviour
 		if (player == null) return false;
 
 		bool changed = false;
+
+		// 临时增益组件（伤害强化 / 快速射击 / 护盾）随玩家一起就位，幂等。
+		PowerUpSystem.Ensure(player);
 
 		var health = player.GetComponent<PlayerHealth>();
 		if (health != null)

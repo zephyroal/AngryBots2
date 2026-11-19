@@ -8,6 +8,7 @@ namespace ABGameplay.Campaign
 		WeaponDamage = 0,
 		AmmoCapacity = 1,
 		ArmorHealth = 2,
+		PowerUpDrop = 3,
 	}
 
 	/// <summary>
@@ -26,6 +27,7 @@ namespace ABGameplay.Campaign
 		public int baseDamageCost = 120;
 		public int baseAmmoCost = 100;
 		public int baseHealthCost = 140;
+		public int basePowerUpCost = 160;
 
 		[Header("Per-level Gains")]
 		public int rifleDamagePerLevel = 6;
@@ -35,6 +37,9 @@ namespace ABGameplay.Campaign
 		public int shotgunMagPerLevel = 2;
 		public int smgMagPerLevel = 8;
 		public int healthPerLevel = 25;
+
+		[Tooltip("每级提升的增益掉落概率（加法，0.05 = +5%）。")]
+		public float powerUpDropPerLevel = 0.05f;
 
 		[Header("Baselines")]
 		public int baseRifleDamage = 25;
@@ -69,8 +74,21 @@ namespace ABGameplay.Campaign
 			{
 				case UpgradeKind.WeaponDamage: return save.damageLevel;
 				case UpgradeKind.AmmoCapacity: return save.ammoLevel;
+				case UpgradeKind.PowerUpDrop: return save.powerUpLevel;
 				default: return save.healthLevel;
 			}
+		}
+
+		/// <summary>增益掉落概率的永久加成（0~maxLevel × powerUpDropPerLevel）。</summary>
+		public float PowerUpDropBonus
+		{
+			get { return PowerUpDropBonusForLevel(GetLevel(UpgradeKind.PowerUpDrop)); }
+		}
+
+		/// <summary>指定等级对应的掉落加成（供自检直接调用，不依赖存档）。</summary>
+		public float PowerUpDropBonusForLevel(int level)
+		{
+			return Mathf.Clamp(level, 0, maxLevel) * Mathf.Max(0f, powerUpDropPerLevel);
 		}
 
 		public int GetCost(UpgradeKind kind)
@@ -81,6 +99,7 @@ namespace ABGameplay.Campaign
 			{
 				case UpgradeKind.WeaponDamage: baseCost = baseDamageCost; break;
 				case UpgradeKind.AmmoCapacity: baseCost = baseAmmoCost; break;
+				case UpgradeKind.PowerUpDrop: baseCost = basePowerUpCost; break;
 				default: baseCost = baseHealthCost; break;
 			}
 			return baseCost * (level + 1);
@@ -114,6 +133,7 @@ namespace ABGameplay.Campaign
 			{
 				case UpgradeKind.WeaponDamage: save.damageLevel++; break;
 				case UpgradeKind.AmmoCapacity: save.ammoLevel++; break;
+				case UpgradeKind.PowerUpDrop: save.powerUpLevel++; break;
 				default: save.healthLevel++; break;
 			}
 			SaveSystem.MarkDirty();
