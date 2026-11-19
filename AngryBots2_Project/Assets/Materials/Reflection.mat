@@ -1,5 +1,5 @@
 %YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
+%TAG !u! tag:yousandi.cn,2023:
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -44,7 +44,7 @@ Material:
         m_Scale: {x: 2, y: 2.3}
         m_Offset: {x: 0, y: 0}
     - _Normal:
-        m_Texture: {fileID: 2800000, guid: 7476f264231e84484941e13bfc3fd46d, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 2, y: 2.3}
         m_Offset: {x: 0, y: 0}
     - _Normals:

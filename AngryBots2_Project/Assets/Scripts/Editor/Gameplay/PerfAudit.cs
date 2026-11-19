@@ -89,6 +89,9 @@ namespace ABGameplay
 				var materials = new HashSet<Material>();
 				var shaders = new HashSet<Shader>();
 				int triangulationEstimate = 0;
+				int missingMaterials = 0;
+				int missingMeshes = 0;
+				int missingScripts = 0;
 
 				foreach (var renderer in renderers)
 				{
@@ -102,12 +105,25 @@ namespace ABGameplay
 						materials.Add(shared);
 						if (shared.shader != null) shaders.Add(shared.shader);
 					}
+					else
+					{
+						missingMaterials++;
+					}
 
 					var filter = renderer.GetComponent<MeshFilter>();
 					if (filter != null && filter.sharedMesh != null)
 					{
 						triangulationEstimate += filter.sharedMesh.triangles.Length / 3;
 					}
+					else if (filter != null)
+					{
+						missingMeshes++;
+					}
+				}
+
+				foreach (var behaviour in Object.FindObjectsOfType<MonoBehaviour>(true))
+				{
+					if (behaviour == null) missingScripts++;
 				}
 
 				int realtimeShadowLights = 0;
@@ -129,7 +145,11 @@ namespace ABGameplay
 					+ " lights=" + lights.Length + "(realtime=" + realtimeLights + ",shadow=" + realtimeShadowLights + ")"
 					+ " particles=" + particles.Length
 					+ " lodGroups=" + lodGroups.Length
-					+ " canvases=" + canvases.Length);
+					+ " canvases=" + canvases.Length
+					+ " missingMat=" + missingMaterials
+					+ " missingMesh=" + missingMeshes
+					+ " missingScript=" + missingScripts
+					+ " umbraKB=" + (StaticOcclusionCulling.umbraDataSize / 1024));
 			}
 		}
 
