@@ -56,6 +56,9 @@ namespace ABGameplay.Enemies
 		public float eliteScoreScale = 2f;
 		public float eliteSizeScale = 1.12f;
 
+		[Tooltip("精英是否随机附加词缀（自爆 / 迅捷 / 铁壁）。")]
+		public bool eliteAffixes = true;
+
 		[Header("Mission")]
 		[Tooltip("自动开始第一波。")]
 		public bool autoStart = true;
@@ -450,6 +453,13 @@ namespace ABGameplay.Enemies
 
 			instance.transform.localScale *= eliteSizeScale;
 			instance.name += "_Elite";
+
+			// 精英词缀：自爆 / 迅捷 / 铁壁（可关闭）
+			if (eliteAffixes)
+			{
+				var affix = EliteAffixHost.PickAffix(UnityEngine.Random.value);
+				EliteAffixHost.Attach(instance, affix);
+			}
 		}
 
 		Vector3 PickSpawnPosition()
