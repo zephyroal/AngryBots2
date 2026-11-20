@@ -4,8 +4,7 @@
 OcclusionCullingSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 3
-  m_OcclusionCullingData: {fileID: 36300000, guid: 236d47877e0bba24e808584465beabe7,
-    type: 2}
+  m_OcclusionCullingData: {fileID: 0}
   m_SceneGUID: 45eba04b58aa6498095a1cb79fc9acfb
   m_OcclusionEnabled: 1
   m_DisplayOccluded: 0

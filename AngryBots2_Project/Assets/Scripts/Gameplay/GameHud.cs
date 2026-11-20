@@ -49,6 +49,7 @@ public class GameHud : MonoBehaviour
 	float bannerAlpha;
 	Color hitMarkerColor = Color.white;
 	int lastTimeSeconds = -1;
+	float hintClearAt;
 
 	void Start()
 	{
@@ -61,6 +62,11 @@ public class GameHud : MonoBehaviour
 			playerHealth = player.GetComponent<PlayerHealth>();
 			weapons = player.GetComponent<WeaponSystem>();
 			powerUps = player.GetComponent<PowerUpSystem>();
+			if (powerUps != null)
+			{
+				powerUps.Activated += OnPowerUpActivated;
+				powerUps.Expired += OnPowerUpExpired;
+			}
 		}
 
 		director = FindObjectOfType<WaveDirector>();
@@ -146,6 +152,12 @@ public class GameHud : MonoBehaviour
 		ProjectileBehaviour.EnemyHit -= OnEnemyHit;
 		EnemyHealth.EnemyDied -= OnEnemyDied;
 
+		if (powerUps != null)
+		{
+			powerUps.Activated -= OnPowerUpActivated;
+			powerUps.Expired -= OnPowerUpExpired;
+		}
+
 		if (playerHealth != null)
 		{
 			playerHealth.HealthChanged -= OnHealthChanged;
@@ -187,6 +199,13 @@ public class GameHud : MonoBehaviour
 			RefreshPowerUps();
 		}
 
+		// 增益提示自动清除
+		if (hintClearAt > 0f && Time.unscaledTime >= hintClearAt)
+		{
+			hintClearAt = 0f;
+			if (hintText != null) hintText.text = "";
+		}
+
 		if (director == null) return;
 
 		int seconds = Mathf.CeilToInt(director.TimeLeft);
@@ -205,6 +224,31 @@ public class GameHud : MonoBehaviour
 
 		if (director.MissionOver && Input.GetKeyDown(KeyCode.R))
 			director.Restart();
+	}
+
+	/// <summary>拾取增益时在提示行弹一条短提示。</summary>
+	void OnPowerUpActivated(PowerUpKind kind, float seconds)
+	{
+		if (hintText == null) return;
+		hintText.text = PowerUpLabel(kind) + "  " + Mathf.RoundToInt(seconds) + "s";
+		hintClearAt = Time.unscaledTime + 1.6f;
+	}
+
+	void OnPowerUpExpired(PowerUpKind kind)
+	{
+		if (hintText == null) return;
+		hintText.text = PowerUpLabel(kind) + " ENDED";
+		hintClearAt = Time.unscaledTime + 1.2f;
+	}
+
+	static string PowerUpLabel(PowerUpKind kind)
+	{
+		switch (kind)
+		{
+			case PowerUpKind.RapidFire: return "RAPID FIRE";
+			case PowerUpKind.Shield: return "SHIELD";
+			default: return "DAMAGE BOOST";
+		}
 	}
 
 	/// <summary>把当前生效的增益与剩余秒数拼成一行（无增益时清空）。</summary>
