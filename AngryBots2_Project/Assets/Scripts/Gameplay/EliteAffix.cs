@@ -125,7 +125,42 @@ public sealed class EliteAffixHost : MonoBehaviour
 
 		if (affix != EliteAffix.None) gameObject.name = gameObject.name + "_" + Label(affix);
 
+		ApplyTint();
+
 		if (Applied != null) Applied(this);
+	}
+
+	/// <summary>按词缀给敌人染一层色（自爆=橙、迅捷=黄、铁壁=蓝），便于一眼分辨。</summary>
+	void ApplyTint()
+	{
+		Color tint;
+		switch (affix)
+		{
+			case EliteAffix.Explosive: tint = new Color(1f, 0.45f, 0.2f); break;
+			case EliteAffix.Swift: tint = new Color(1f, 0.85f, 0.2f); break;
+			case EliteAffix.Tank: tint = new Color(0.4f, 0.7f, 1f); break;
+			default: return;
+		}
+
+		foreach (var renderer in GetComponentsInChildren<Renderer>(true))
+		{
+			if (renderer == null) continue;
+
+			var material = renderer.material;
+			if (material == null) continue;
+
+			if (material.HasProperty("_BaseColor"))
+			{
+				var baseColor = material.GetColor("_BaseColor");
+				material.SetColor("_BaseColor", Color.Lerp(baseColor, tint, 0.55f));
+			}
+
+			if (material.HasProperty("_EmissionColor"))
+			{
+				material.EnableKeyword("_EMISSION");
+				material.SetColor("_EmissionColor", tint * 0.6f);
+			}
+		}
 	}
 
 	bool applied;

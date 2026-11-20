@@ -314,12 +314,14 @@ public class GameHud : MonoBehaviour
 				? weapons.ShotgunAmmo + " / " + weapons.shotgunMagSize
 				: (weapons.Mode == WeaponSystem.WeaponMode.Sniper
 					? weapons.SniperAmmo + " / " + weapons.sniperMagSize
-					: weapons.SmgAmmo + " / " + weapons.smgMagSize));
+					: (weapons.Mode == WeaponSystem.WeaponMode.Launcher
+						? weapons.LauncherAmmo + " / " + weapons.launcherMagSize
+						: weapons.SmgAmmo + " / " + weapons.smgMagSize)));
 
 		ammoText.text = (weapons.Reloading ? "RELOADING...  " : "") +
 			"AMMO  " + ammo +
 			"    GRENADE " + weapons.Grenades +
-			"\n[1] RIFLE   [2] SHOTGUN   [3] SMG   [4] SNIPER   [R] RELOAD   [RMB] GRENADE";
+			"\n[1] RIFLE   [2] SHOTGUN   [3] SMG   [4] SNIPER   [5] LAUNCHER   [R] RELOAD   [RMB] GRENADE";
 	}
 
 	void OnWaveStarted()

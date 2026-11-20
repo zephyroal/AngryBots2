@@ -40,7 +40,22 @@ namespace ABGameplay
 
 				weapons.SwitchTo(WeaponSystem.WeaponMode.Rifle);
 				Ok(weapons.ModeName == "RIFLE", "切回步枪");
-				weapons.SwitchTo(WeaponSystem.WeaponMode.Sniper);
+
+				Ok((int)WeaponSystem.WeaponMode.Launcher == 4, "Launcher 枚举值 = 4");
+				weapons.SwitchTo(WeaponSystem.WeaponMode.Launcher);
+				Ok(weapons.ModeName == "LAUNCHER", "武器名为 LAUNCHER");
+				Ok(weapons.CurrentMagSize == weapons.launcherMagSize, "榴弹弹匣上限 = " + weapons.CurrentMagSize);
+				Ok(weapons.CurrentMag == weapons.launcherMagSize, "榴弹初始弹匣 = " + weapons.CurrentMag);
+				Ok(weapons.launcherSpeed > 10f, "榴弹初速 = " + weapons.launcherSpeed);
+
+				Ok(weapons.sniperPierce >= 1, "狙击穿透数 = " + weapons.sniperPierce);
+				Ok(weapons.sniperCriticalMultiplier > 1f, "狙击爆头倍率 = " + weapons.sniperCriticalMultiplier);
+
+				// 爆头纯函数
+				Ok(ProjectileBehaviour.ApplyCritical(90, 1.5f, 1.0f, 0.35f, 2f) == 180, "爆头伤害翻倍 = 180");
+				Ok(ProjectileBehaviour.ApplyCritical(90, 1.2f, 1.0f, 0.35f, 2f) == 90, "未达高度阈值不翻倍");
+				Ok(ProjectileBehaviour.ApplyCritical(90, 1.5f, 1.0f, 0.35f, 1f) == 90, "倍率 1 时视为关闭爆头");
+				weapons.SwitchTo(WeaponSystem.WeaponMode.Rifle);
 			}
 			finally
 			{

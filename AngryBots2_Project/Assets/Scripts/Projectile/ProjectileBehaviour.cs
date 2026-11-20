@@ -28,6 +28,27 @@ public class ProjectileBehaviour : MonoBehaviour {
 	public float bounceForceMultiplier = 1.0f;
 	private int bounceCount = 0;
 
+	[Header("Pierce / Critical")]
+	[Tooltip("命中敌人后还能继续穿透的次数（0 = 命中即消失）。")]
+	public int pierceRemaining;
+
+	[Tooltip("爆头倍率（1 = 关闭）。")]
+	public float criticalMultiplier = 1f;
+
+	[Tooltip("爆头判定：命中点高出敌人包围盒中心多少米算爆头。")]
+	public float criticalHeight = 0.35f;
+
+	readonly System.Collections.Generic.HashSet<int> hitEnemies = new System.Collections.Generic.HashSet<int>();
+
+	/// <summary>爆头伤害计算（纯函数，便于自检）。</summary>
+	public static int ApplyCritical(int damage, float hitY, float centerY, float heightThreshold, float multiplier)
+	{
+		if (damage <= 0) return 0;
+		if (multiplier <= 1f) return damage;
+		if (hitY - centerY < heightThreshold) return damage;
+		return Mathf.Max(1, Mathf.RoundToInt(damage * multiplier));
+	}
+
 
 	void Awake()
 	{
@@ -38,6 +59,7 @@ public class ProjectileBehaviour : MonoBehaviour {
 	void OnEnable()
 	{
 		bounceCount = 0;
+		hitEnemies.Clear();
 		if (projectileRigidbody != null)
 		{
 			projectileRigidbody.velocity = Vector3.zero;
@@ -56,16 +78,31 @@ public class ProjectileBehaviour : MonoBehaviour {
 		// 如果碰到敌人
 		if(theCollider.CompareTag("Enemy"))
 		{
-			if(damageToEnemy > 0)
+			// 同一个敌人只结算一次（穿透时不会反复扣血）
+			int enemyId = theCollider.gameObject.GetInstanceID();
+			if (!hitEnemies.Add(enemyId)) return;
+
+			int damage = ApplyCritical(damageToEnemy, transform.position.y, theCollider.bounds.center.y,
+				criticalHeight, criticalMultiplier);
+
+			if (damage > 0)
 			{
-				theCollider.GetComponent<EnemyHealth>().RemoveHealth(damageToEnemy);	
+				var enemyHealth = theCollider.GetComponent<EnemyHealth>();
+				if (enemyHealth != null) enemyHealth.RemoveHealth(damage);
 			}
 
 			if (EnemyHit != null) EnemyHit(transform.position);
 
 			VfxPool.Spawn(hitEnemyParticles, transform.position, transform.rotation);
-			RemoveProjectile();
 
+			// 还有穿透次数就继续飞
+			if (pierceRemaining > 0)
+			{
+				pierceRemaining--;
+				return;
+			}
+
+			RemoveProjectile();
 		}
 		// 如果碰到环境物体并且启用了反弹
 		else if (theCollider.CompareTag("Environment"))

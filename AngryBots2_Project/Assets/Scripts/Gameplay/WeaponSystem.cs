@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 public class WeaponSystem : MonoBehaviour
 {
-	public enum WeaponMode { Rifle = 0, Shotgun = 1, SMG = 2, Sniper = 3 }
+	public enum WeaponMode { Rifle = 0, Shotgun = 1, SMG = 2, Sniper = 3, Launcher = 4 }
 
 	[Header("Shared References")]
 	public GameObject projectilePrefab;
@@ -49,6 +49,18 @@ public class WeaponSystem : MonoBehaviour
 	public float sniperReloadTime = 2.2f;
 	public int sniperDamage = 90;
 	public float sniperSpread = 0.2f;
+	[Tooltip("狙击弹可以额外穿透的敌人数（0 = 命中即停）。")]
+	public int sniperPierce = 2;
+	[Tooltip("狙击爆头倍率（命中点高于敌人中心一定高度时生效）。")]
+	public float sniperCriticalMultiplier = 2f;
+
+	[Header("Launcher")]
+	public float launcherInterval = 1.4f;
+	public int launcherMagSize = 4;
+	public float launcherReloadTime = 2.6f;
+	public int launcherDamage = 60;
+	public float launcherSpeed = 24f;
+	public float launcherSpread = 1f;
 
 	[Header("Grenade")]
 	public int grenadeCharges = 3;
@@ -61,6 +73,7 @@ public class WeaponSystem : MonoBehaviour
 	public int ShotgunAmmo { get; private set; }
 	public int SmgAmmo { get; private set; }
 	public int SniperAmmo { get; private set; }
+	public int LauncherAmmo { get; private set; }
 	public int Grenades { get; private set; }
 	public bool Reloading { get; private set; }
 	public string ModeName
@@ -72,6 +85,7 @@ public class WeaponSystem : MonoBehaviour
 				case WeaponMode.Rifle: return "RIFLE";
 				case WeaponMode.Shotgun: return "SHOTGUN";
 				case WeaponMode.Sniper: return "SNIPER";
+				case WeaponMode.Launcher: return "LAUNCHER";
 				default: return "SMG";
 			}
 		}
@@ -86,6 +100,7 @@ public class WeaponSystem : MonoBehaviour
 				case WeaponMode.Rifle: return RifleAmmo;
 				case WeaponMode.Shotgun: return ShotgunAmmo;
 				case WeaponMode.Sniper: return SniperAmmo;
+				case WeaponMode.Launcher: return LauncherAmmo;
 				default: return SmgAmmo;
 			}
 		}
@@ -99,6 +114,7 @@ public class WeaponSystem : MonoBehaviour
 				case WeaponMode.Rifle: return rifleMagSize;
 				case WeaponMode.Shotgun: return shotgunMagSize;
 				case WeaponMode.Sniper: return sniperMagSize;
+				case WeaponMode.Launcher: return launcherMagSize;
 				default: return smgMagSize;
 			}
 		}
@@ -112,6 +128,7 @@ public class WeaponSystem : MonoBehaviour
 	public int ShotgunReserve { get; private set; }
 	public int SmgReserve { get; private set; }
 	public int SniperReserve { get; private set; }
+	public int LauncherReserve { get; private set; }
 
 	/// <summary>当前武器备弹。</summary>
 	public int CurrentReserve
@@ -124,6 +141,7 @@ public class WeaponSystem : MonoBehaviour
 				case WeaponMode.Rifle: return RifleReserve;
 				case WeaponMode.Shotgun: return ShotgunReserve;
 				case WeaponMode.Sniper: return SniperReserve;
+				case WeaponMode.Launcher: return LauncherReserve;
 				default: return SmgReserve;
 			}
 		}
@@ -146,6 +164,7 @@ public class WeaponSystem : MonoBehaviour
 			case WeaponMode.Rifle: RifleReserve = after; break;
 			case WeaponMode.Shotgun: ShotgunReserve = after; break;
 			case WeaponMode.Sniper: SniperReserve = after; break;
+			case WeaponMode.Launcher: LauncherReserve = after; break;
 			default: SmgReserve = after; break;
 		}
 
@@ -290,10 +309,12 @@ public class WeaponSystem : MonoBehaviour
 		ShotgunAmmo = shotgunMagSize;
 		SmgAmmo = smgMagSize;
 		SniperAmmo = sniperMagSize;
+		LauncherAmmo = launcherMagSize;
 		RifleReserve = rifleMagSize * 4;
 		ShotgunReserve = shotgunMagSize * 4;
 		SmgReserve = smgMagSize * 4;
 		SniperReserve = sniperMagSize * 4;
+		LauncherReserve = launcherMagSize * 4;
 		Grenades = grenadeCharges;
 	}
 
@@ -317,6 +338,7 @@ public class WeaponSystem : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Alpha2)) SwitchTo(WeaponMode.Shotgun);
 		if (Input.GetKeyDown(KeyCode.Alpha3)) SwitchTo(WeaponMode.SMG);
 		if (Input.GetKeyDown(KeyCode.Alpha4)) SwitchTo(WeaponMode.Sniper);
+		if (Input.GetKeyDown(KeyCode.Alpha5)) SwitchTo(WeaponMode.Launcher);
 
 		if (Input.GetKeyDown(KeyCode.R)) StartReload();
 
@@ -363,7 +385,13 @@ public class WeaponSystem : MonoBehaviour
 		{
 			SniperAmmo--;
 			nextFireTime = Time.time + sniperInterval * rateScale;
-			SpawnProjectile(ScaledDamage(sniperDamage), sniperSpread, 1);
+			SpawnProjectile(ScaledDamage(sniperDamage), sniperSpread, 1, sniperPierce, sniperCriticalMultiplier);
+		}
+		else if (Mode == WeaponMode.Launcher)
+		{
+			LauncherAmmo--;
+			nextFireTime = Time.time + launcherInterval * rateScale;
+			SpawnLauncherGrenade(ScaledDamage(launcherDamage), launcherSpread);
 		}
 		else
 		{
@@ -424,7 +452,8 @@ public class WeaponSystem : MonoBehaviour
 
 		float reloadTime = Mode == WeaponMode.Rifle ? rifleReloadTime
 			: (Mode == WeaponMode.Shotgun ? shotgunReloadTime
-				: (Mode == WeaponMode.Sniper ? sniperReloadTime : smgReloadTime));
+				: (Mode == WeaponMode.Sniper ? sniperReloadTime
+					: (Mode == WeaponMode.Launcher ? launcherReloadTime : smgReloadTime)));
 		yield return new WaitForSeconds(reloadTime);
 
 		if (take > 0)
@@ -432,6 +461,7 @@ public class WeaponSystem : MonoBehaviour
 			if (Mode == WeaponMode.Rifle) { RifleAmmo += take; RifleReserve -= take; }
 			else if (Mode == WeaponMode.Shotgun) { ShotgunAmmo += take; ShotgunReserve -= take; }
 			else if (Mode == WeaponMode.Sniper) { SniperAmmo += take; SniperReserve -= take; }
+			else if (Mode == WeaponMode.Launcher) { LauncherAmmo += take; LauncherReserve -= take; }
 			else { SmgAmmo += take; SmgReserve -= take; }
 		}
 
@@ -465,7 +495,7 @@ public class WeaponSystem : MonoBehaviour
 		RaiseAmmoChanged();
 	}
 
-	void SpawnProjectile(int damage, float spread, int count)
+	void SpawnProjectile(int damage, float spread, int count, int pierce = 0, float criticalMultiplier = 1f)
 	{
 		if (projectilePrefab == null || spawnPoint == null) return;
 
@@ -479,8 +509,35 @@ public class WeaponSystem : MonoBehaviour
 			var projectile = PoolManager.Spawn(projectilePrefab, spawnPoint.position, rotation);
 			if (projectile == null) continue;
 			var behaviour = projectile.GetComponent<ProjectileBehaviour>();
-			if (behaviour != null) behaviour.damageToEnemy = damage;
+			if (behaviour != null)
+			{
+				behaviour.damageToEnemy = damage;
+				behaviour.pierceRemaining = Mathf.Max(0, pierce);
+				behaviour.criticalMultiplier = Mathf.Max(1f, criticalMultiplier);
+			}
 		}
+	}
+
+	/// <summary>榴弹发射器：复用工程里的手雷预制体，给一个向前的初速。</summary>
+	void SpawnLauncherGrenade(int damage, float spread)
+	{
+		if (grenadePrefab == null) return;
+
+		Vector3 position = spawnPoint != null ? spawnPoint.position : transform.position + Vector3.up * 1.2f;
+		Quaternion baseRotation = spawnPoint != null ? spawnPoint.rotation : transform.rotation;
+		Quaternion rotation = baseRotation * Quaternion.Euler(
+			UnityEngine.Random.Range(-spread, spread),
+			UnityEngine.Random.Range(-spread, spread),
+			0f);
+
+		var grenade = PoolManager.Spawn(grenadePrefab, position, rotation);
+		if (grenade == null) return;
+
+		var behaviour = grenade.GetComponent<GrenadeProjectile>();
+		if (behaviour != null) behaviour.damage = damage;
+
+		var body = grenade.GetComponent<Rigidbody>();
+		if (body != null) body.velocity = (rotation * Vector3.forward) * launcherSpeed;
 	}
 
 	void RaiseAmmoChanged()

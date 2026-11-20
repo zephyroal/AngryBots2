@@ -34,6 +34,7 @@ namespace ABGameplay.Campaign
 		public int shotgunDamagePerLevel = 4;
 		public int smgDamagePerLevel = 2;
 		public int sniperDamagePerLevel = 12;
+		public int launcherDamagePerLevel = 10;
 		public int rifleMagPerLevel = 6;
 		public int shotgunMagPerLevel = 2;
 		public int smgMagPerLevel = 8;
@@ -48,6 +49,7 @@ namespace ABGameplay.Campaign
 		public int baseShotgunDamage = 12;
 		public int baseSmgDamage = 9;
 		public int baseSniperDamage = 90;
+		public int baseLauncherDamage = 60;
 		public int baseRifleMag = 30;
 		public int baseShotgunMag = 8;
 		public int baseSmgMag = 40;
@@ -169,6 +171,7 @@ namespace ABGameplay.Campaign
 				weapons.shotgunDamage = baseShotgunDamage + damageLevel * shotgunDamagePerLevel;
 				weapons.smgDamage = baseSmgDamage + damageLevel * smgDamagePerLevel;
 				weapons.sniperDamage = baseSniperDamage + damageLevel * sniperDamagePerLevel;
+				weapons.launcherDamage = baseLauncherDamage + damageLevel * launcherDamagePerLevel;
 				weapons.rifleMagSize = baseRifleMag + ammoLevel * rifleMagPerLevel;
 				weapons.shotgunMagSize = baseShotgunMag + ammoLevel * shotgunMagPerLevel;
 				weapons.smgMagSize = baseSmgMag + ammoLevel * smgMagPerLevel;
