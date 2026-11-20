@@ -81,6 +81,20 @@ public sealed class PowerUpDropper : MonoBehaviour
 		GameEvents.EnemyKilled -= OnEnemyKilled;
 	}
 
+	/// <summary>在指定位置按当前关卡权重掉一个增益（chance 为额外保证概率，1 = 必掉）。</summary>
+	public static void DropAt(Vector3 position, float chance)
+	{
+		if (chance <= 0f) return;
+		if (chance < 1f && Random.value > chance) return;
+
+		var dropper = Instance;
+		var kind = dropper != null
+			? dropper.PickKind(Random.value)
+			: (PowerUpKind)Random.Range(0, PowerUpSystem.KindCount);
+
+		SimplePickup.CreatePowerUp(kind, position + Vector3.up * 0.2f, 0f);
+	}
+
 	void OnEnemyKilled(EnemyKind kind, Vector3 position, GameObject killer, int score)
 	{
 		if (!dropEnabled) return;

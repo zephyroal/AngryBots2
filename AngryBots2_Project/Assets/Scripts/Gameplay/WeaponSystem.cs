@@ -10,7 +10,7 @@ using UnityEngine;
 /// </summary>
 public class WeaponSystem : MonoBehaviour
 {
-	public enum WeaponMode { Rifle = 0, Shotgun = 1, SMG = 2 }
+	public enum WeaponMode { Rifle = 0, Shotgun = 1, SMG = 2, Sniper = 3 }
 
 	[Header("Shared References")]
 	public GameObject projectilePrefab;
@@ -43,6 +43,13 @@ public class WeaponSystem : MonoBehaviour
 	public int smgDamage = 9;
 	public float smgSpread = 1.2f;
 
+	[Header("Sniper")]
+	public float sniperInterval = 1.1f;
+	public int sniperMagSize = 5;
+	public float sniperReloadTime = 2.2f;
+	public int sniperDamage = 90;
+	public float sniperSpread = 0.2f;
+
 	[Header("Grenade")]
 	public int grenadeCharges = 3;
 	public int maxGrenadeCharges = 5;
@@ -53,6 +60,7 @@ public class WeaponSystem : MonoBehaviour
 	public int RifleAmmo { get; private set; }
 	public int ShotgunAmmo { get; private set; }
 	public int SmgAmmo { get; private set; }
+	public int SniperAmmo { get; private set; }
 	public int Grenades { get; private set; }
 	public bool Reloading { get; private set; }
 	public string ModeName
@@ -63,6 +71,7 @@ public class WeaponSystem : MonoBehaviour
 			{
 				case WeaponMode.Rifle: return "RIFLE";
 				case WeaponMode.Shotgun: return "SHOTGUN";
+				case WeaponMode.Sniper: return "SNIPER";
 				default: return "SMG";
 			}
 		}
@@ -76,6 +85,7 @@ public class WeaponSystem : MonoBehaviour
 			{
 				case WeaponMode.Rifle: return RifleAmmo;
 				case WeaponMode.Shotgun: return ShotgunAmmo;
+				case WeaponMode.Sniper: return SniperAmmo;
 				default: return SmgAmmo;
 			}
 		}
@@ -88,6 +98,7 @@ public class WeaponSystem : MonoBehaviour
 			{
 				case WeaponMode.Rifle: return rifleMagSize;
 				case WeaponMode.Shotgun: return shotgunMagSize;
+				case WeaponMode.Sniper: return sniperMagSize;
 				default: return smgMagSize;
 			}
 		}
@@ -100,6 +111,7 @@ public class WeaponSystem : MonoBehaviour
 	public int RifleReserve { get; private set; }
 	public int ShotgunReserve { get; private set; }
 	public int SmgReserve { get; private set; }
+	public int SniperReserve { get; private set; }
 
 	/// <summary>当前武器备弹。</summary>
 	public int CurrentReserve
@@ -111,6 +123,7 @@ public class WeaponSystem : MonoBehaviour
 			{
 				case WeaponMode.Rifle: return RifleReserve;
 				case WeaponMode.Shotgun: return ShotgunReserve;
+				case WeaponMode.Sniper: return SniperReserve;
 				default: return SmgReserve;
 			}
 		}
@@ -132,6 +145,7 @@ public class WeaponSystem : MonoBehaviour
 		{
 			case WeaponMode.Rifle: RifleReserve = after; break;
 			case WeaponMode.Shotgun: ShotgunReserve = after; break;
+			case WeaponMode.Sniper: SniperReserve = after; break;
 			default: SmgReserve = after; break;
 		}
 
@@ -275,9 +289,11 @@ public class WeaponSystem : MonoBehaviour
 		RifleAmmo = rifleMagSize;
 		ShotgunAmmo = shotgunMagSize;
 		SmgAmmo = smgMagSize;
+		SniperAmmo = sniperMagSize;
 		RifleReserve = rifleMagSize * 4;
 		ShotgunReserve = shotgunMagSize * 4;
 		SmgReserve = smgMagSize * 4;
+		SniperReserve = sniperMagSize * 4;
 		Grenades = grenadeCharges;
 	}
 
@@ -300,6 +316,7 @@ public class WeaponSystem : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchTo(WeaponMode.Rifle);
 		if (Input.GetKeyDown(KeyCode.Alpha2)) SwitchTo(WeaponMode.Shotgun);
 		if (Input.GetKeyDown(KeyCode.Alpha3)) SwitchTo(WeaponMode.SMG);
+		if (Input.GetKeyDown(KeyCode.Alpha4)) SwitchTo(WeaponMode.Sniper);
 
 		if (Input.GetKeyDown(KeyCode.R)) StartReload();
 
@@ -341,6 +358,12 @@ public class WeaponSystem : MonoBehaviour
 			ShotgunAmmo--;
 			nextFireTime = Time.time + shotgunInterval * rateScale;
 			SpawnProjectile(ScaledDamage(shotgunDamage), shotgunSpread, shotgunPellets);
+		}
+		else if (Mode == WeaponMode.Sniper)
+		{
+			SniperAmmo--;
+			nextFireTime = Time.time + sniperInterval * rateScale;
+			SpawnProjectile(ScaledDamage(sniperDamage), sniperSpread, 1);
 		}
 		else
 		{
@@ -400,13 +423,15 @@ public class WeaponSystem : MonoBehaviour
 		int take = Mathf.Min(needed, CurrentReserve);
 
 		float reloadTime = Mode == WeaponMode.Rifle ? rifleReloadTime
-			: (Mode == WeaponMode.Shotgun ? shotgunReloadTime : smgReloadTime);
+			: (Mode == WeaponMode.Shotgun ? shotgunReloadTime
+				: (Mode == WeaponMode.Sniper ? sniperReloadTime : smgReloadTime));
 		yield return new WaitForSeconds(reloadTime);
 
 		if (take > 0)
 		{
 			if (Mode == WeaponMode.Rifle) { RifleAmmo += take; RifleReserve -= take; }
 			else if (Mode == WeaponMode.Shotgun) { ShotgunAmmo += take; ShotgunReserve -= take; }
+			else if (Mode == WeaponMode.Sniper) { SniperAmmo += take; SniperReserve -= take; }
 			else { SmgAmmo += take; SmgReserve -= take; }
 		}
 

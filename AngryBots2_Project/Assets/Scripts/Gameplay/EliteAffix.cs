@@ -44,6 +44,13 @@ public sealed class EliteAffixHost : MonoBehaviour
 	[Tooltip("铁壁词缀的额外生命倍率。")]
 	public float tankHealthScale = 1.5f;
 
+	[Header("Loot")]
+	[Tooltip("带词缀的精英死亡时，额外掉落一个增益的概率。")]
+	[Range(0f, 1f)] public float bonusDropChance = 0.35f;
+
+	/// <summary>词缀挂载完成（供 HUD 弹提示）。</summary>
+	public static event System.Action<EliteAffixHost> Applied;
+
 	/// <summary>词缀权重：40% 自爆 / 30% 迅捷 / 30% 铁壁。</summary>
 	public static EliteAffix PickAffix(float roll01)
 	{
@@ -117,15 +124,20 @@ public sealed class EliteAffixHost : MonoBehaviour
 		}
 
 		if (affix != EliteAffix.None) gameObject.name = gameObject.name + "_" + Label(affix);
+
+		if (Applied != null) Applied(this);
 	}
 
 	bool applied;
 
 	void OnEnemyUnregistered(EnemyAgent dead)
 	{
-		if (affix != EliteAffix.Explosive) return;
 		if (dead == null || dead.gameObject != gameObject) return;
-		Explode();
+
+		if (affix == EliteAffix.Explosive) Explode();
+
+		// 带词缀的精英额外掉一个增益（默认 35%）
+		if (bonusDropChance > 0f) PowerUpDropper.DropAt(transform.position, bonusDropChance);
 	}
 
 	void Explode()

@@ -97,6 +97,7 @@ public class GameHud : MonoBehaviour
 
 		ProjectileBehaviour.EnemyHit += OnEnemyHit;
 		EnemyHealth.EnemyDied += OnEnemyDied;
+		EliteAffixHost.Applied += OnEliteAffixApplied;
 
 		SetHitMarkerAlpha(0f);
 		if (waveBanner != null) waveBanner.color = new Color(1f, 0.9f, 0.55f, 0f);
@@ -151,6 +152,7 @@ public class GameHud : MonoBehaviour
 	{
 		ProjectileBehaviour.EnemyHit -= OnEnemyHit;
 		EnemyHealth.EnemyDied -= OnEnemyDied;
+		EliteAffixHost.Applied -= OnEliteAffixApplied;
 
 		if (powerUps != null)
 		{
@@ -224,6 +226,14 @@ public class GameHud : MonoBehaviour
 
 		if (director.MissionOver && Input.GetKeyDown(KeyCode.R))
 			director.Restart();
+	}
+
+	/// <summary>精英带词缀出场时提示一次。</summary>
+	void OnEliteAffixApplied(EliteAffixHost host)
+	{
+		if (hintText == null || host == null) return;
+		hintText.text = "ELITE  " + EliteAffixHost.Label(host.affix);
+		hintClearAt = Time.unscaledTime + 1.6f;
 	}
 
 	/// <summary>拾取增益时在提示行弹一条短提示。</summary>
@@ -302,12 +312,14 @@ public class GameHud : MonoBehaviour
 			? weapons.RifleAmmo + " / " + weapons.rifleMagSize
 			: (weapons.Mode == WeaponSystem.WeaponMode.Shotgun
 				? weapons.ShotgunAmmo + " / " + weapons.shotgunMagSize
-				: weapons.SmgAmmo + " / " + weapons.smgMagSize);
+				: (weapons.Mode == WeaponSystem.WeaponMode.Sniper
+					? weapons.SniperAmmo + " / " + weapons.sniperMagSize
+					: weapons.SmgAmmo + " / " + weapons.smgMagSize));
 
 		ammoText.text = (weapons.Reloading ? "RELOADING...  " : "") +
 			"AMMO  " + ammo +
 			"    GRENADE " + weapons.Grenades +
-			"\n[1] RIFLE   [2] SHOTGUN   [R] RELOAD   [RMB] GRENADE";
+			"\n[1] RIFLE   [2] SHOTGUN   [3] SMG   [4] SNIPER   [R] RELOAD   [RMB] GRENADE";
 	}
 
 	void OnWaveStarted()

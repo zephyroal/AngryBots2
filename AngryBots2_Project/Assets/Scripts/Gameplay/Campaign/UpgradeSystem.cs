@@ -33,9 +33,11 @@ namespace ABGameplay.Campaign
 		public int rifleDamagePerLevel = 6;
 		public int shotgunDamagePerLevel = 4;
 		public int smgDamagePerLevel = 2;
+		public int sniperDamagePerLevel = 12;
 		public int rifleMagPerLevel = 6;
 		public int shotgunMagPerLevel = 2;
 		public int smgMagPerLevel = 8;
+		public int sniperMagPerLevel = 1;
 		public int healthPerLevel = 25;
 
 		[Tooltip("每级提升的增益掉落概率（加法，0.05 = +5%）。")]
@@ -45,9 +47,11 @@ namespace ABGameplay.Campaign
 		public int baseRifleDamage = 25;
 		public int baseShotgunDamage = 12;
 		public int baseSmgDamage = 9;
+		public int baseSniperDamage = 90;
 		public int baseRifleMag = 30;
 		public int baseShotgunMag = 8;
 		public int baseSmgMag = 40;
+		public int baseSniperMag = 5;
 		public int baseMaxHealth = 100;
 
 		public event Action Changed;
@@ -164,9 +168,11 @@ namespace ABGameplay.Campaign
 				weapons.rifleDamage = baseRifleDamage + damageLevel * rifleDamagePerLevel;
 				weapons.shotgunDamage = baseShotgunDamage + damageLevel * shotgunDamagePerLevel;
 				weapons.smgDamage = baseSmgDamage + damageLevel * smgDamagePerLevel;
+				weapons.sniperDamage = baseSniperDamage + damageLevel * sniperDamagePerLevel;
 				weapons.rifleMagSize = baseRifleMag + ammoLevel * rifleMagPerLevel;
 				weapons.shotgunMagSize = baseShotgunMag + ammoLevel * shotgunMagPerLevel;
 				weapons.smgMagSize = baseSmgMag + ammoLevel * smgMagPerLevel;
+				weapons.sniperMagSize = baseSniperMag + ammoLevel * sniperMagPerLevel;
 			}
 
 			var playerHealth = player.GetComponent<PlayerHealth>();
