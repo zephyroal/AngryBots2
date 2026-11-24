@@ -119,8 +119,18 @@ namespace ABGameplay.Campaign
 		public bool CanBuy(UpgradeKind kind)
 		{
 			if (IsMaxed(kind)) return false;
-			var score = ScoreSystem.Instance != null ? ScoreSystem.Instance : FindObjectOfType<ScoreSystem>();
+			var score = ResolveScore();
 			return score != null && score.CanAfford(GetCost(kind));
+		}
+
+		/// <summary>缓存 ScoreSystem 查找结果，避免每次点击购买都走一次 FindObjectOfType。</summary>
+		static ScoreSystem cachedScore;
+
+		static ScoreSystem ResolveScore()
+		{
+			if (ScoreSystem.Instance != null) return ScoreSystem.Instance;
+			if (cachedScore == null) cachedScore = FindObjectOfType<ScoreSystem>();
+			return cachedScore;
 		}
 
 		/// <summary>购买一级。成功返回 true。</summary>
@@ -128,7 +138,7 @@ namespace ABGameplay.Campaign
 		{
 			if (IsMaxed(kind)) return false;
 
-			var score = ScoreSystem.Instance != null ? ScoreSystem.Instance : FindObjectOfType<ScoreSystem>();
+			var score = ResolveScore();
 			if (score == null) return false;
 
 			int cost = GetCost(kind);

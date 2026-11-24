@@ -249,7 +249,7 @@ namespace ABGameplay.Enemies
 			if (explosionEffect != null)
 				VfxPool.Spawn(explosionEffect, center, Quaternion.identity);
 			if (explosionClip != null)
-				AudioSource.PlayClipAtPoint(explosionClip, center);
+				AudioOneShot.Play(explosionClip, center);
 
 			// 自爆算自毁：不给击杀分（击杀分只在对玩家击杀时给）。
 			SetState(EnemyState.Dead);

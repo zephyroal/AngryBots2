@@ -49,6 +49,9 @@ public class GameHud : MonoBehaviour
 	float bannerAlpha;
 	Color hitMarkerColor = Color.white;
 	int lastTimeSeconds = -1;
+	int lastWave = -1;
+	int lastAlive = -1;
+	int lastCountdown = -2;
 	float hintClearAt;
 
 	void Start()
@@ -219,9 +222,21 @@ public class GameHud : MonoBehaviour
 
 		if (waveText != null)
 		{
-			waveText.text = "WAVE " + director.Wave + " / " + director.wavesToWin + "    ENEMIES " + director.AliveEnemies;
-			if (director.NextWaveCountdown > 0f)
-				waveText.text += "    NEXT WAVE IN " + Mathf.CeilToInt(director.waveDelay - director.NextWaveCountdown);
+			// 只在波次 / 剩余敌人数 / 倒计时秒数变化时重建字符串（原先每帧拼 2~3 次，持续产生 GC）
+			int countdown = director.NextWaveCountdown > 0f
+				? Mathf.CeilToInt(director.waveDelay - director.NextWaveCountdown)
+				: -1;
+
+			if (director.Wave != lastWave || director.AliveEnemies != lastAlive || countdown != lastCountdown)
+			{
+				lastWave = director.Wave;
+				lastAlive = director.AliveEnemies;
+				lastCountdown = countdown;
+
+				waveText.text = "WAVE " + director.Wave + " / " + director.wavesToWin
+					+ "    ENEMIES " + director.AliveEnemies;
+				if (countdown >= 0) waveText.text += "    NEXT WAVE IN " + countdown;
+			}
 		}
 
 		if (director.MissionOver && Input.GetKeyDown(KeyCode.R))

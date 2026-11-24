@@ -280,6 +280,31 @@ public class WeaponSystem : MonoBehaviour
 		return best;
 	}
 
+	/// <summary>按武器放大/缩小枪口特效（狙击更炸、SMG 更小），让每把枪的开火手感不同。</summary>
+	public float MuzzleFlashScale(WeaponMode mode)
+	{
+		switch (mode)
+		{
+			case WeaponMode.Shotgun: return 1.25f;
+			case WeaponMode.SMG: return 0.85f;
+			case WeaponMode.Sniper: return 1.6f;
+			case WeaponMode.Launcher: return 1.8f;
+			default: return 1f;
+		}
+	}
+
+	/// <summary>按武器放大命中特效（狙击的冲击更大）。</summary>
+	public float ImpactScale(WeaponMode mode)
+	{
+		switch (mode)
+		{
+			case WeaponMode.Shotgun: return 1.15f;
+			case WeaponMode.SMG: return 0.85f;
+			case WeaponMode.Sniper: return 1.5f;
+			default: return 1f;
+		}
+	}
+
 	/// <summary>
 	/// 逐发重播枪口特效。粒子系统已经在播放时 <c>Play()</c> 是空操作，
 	/// 连发（SMG 0.07s）会因此漏闪，所以每次先清空再播放。
@@ -296,6 +321,10 @@ public class WeaponSystem : MonoBehaviour
 			ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 			ps.Play();
 		}
+
+		// 按武器缩放整组枪口特效（狙击/榴弹更大，SMG 更小）
+		if (muzzleFlashRoot != null)
+			muzzleFlashRoot.localScale = Vector3.one * MuzzleFlashScale(Mode);
 	}
 
 	bool ammoInitialized;
@@ -514,6 +543,7 @@ public class WeaponSystem : MonoBehaviour
 				behaviour.damageToEnemy = damage;
 				behaviour.pierceRemaining = Mathf.Max(0, pierce);
 				behaviour.criticalMultiplier = Mathf.Max(1f, criticalMultiplier);
+				behaviour.impactScale = ImpactScale(Mode);
 			}
 		}
 	}

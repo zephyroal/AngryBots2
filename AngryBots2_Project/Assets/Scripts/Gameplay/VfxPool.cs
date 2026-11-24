@@ -19,10 +19,19 @@ public static class VfxPool
 
 	public static GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent)
 	{
+		return Spawn(prefab, position, rotation, parent, 1f);
+	}
+
+	/// <summary>带缩放的特效生成（狙击命中之类可以放大冲击）。</summary>
+	public static GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent, float scale)
+	{
 		if (prefab == null) return null;
 
 		var instance = PoolManager.Spawn(prefab, position, rotation, parent);
 		if (instance == null) return null;
+
+		if (!Mathf.Approximately(scale, 1f))
+			instance.transform.localScale = Vector3.one * Mathf.Max(0.05f, scale);
 
 		foreach (var ps in instance.GetComponentsInChildren<ParticleSystem>(true))
 		{

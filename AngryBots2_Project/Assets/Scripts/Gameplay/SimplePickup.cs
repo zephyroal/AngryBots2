@@ -144,7 +144,7 @@ public sealed class SimplePickup : MonoBehaviour
 
 		PickupCount++;
 		GameEvents.RaisePickupCollected(type == PickupType.PowerUp ? powerUpKind.ToString() : type.ToString(), amount);
-		if (pickupClip != null) AudioSource.PlayClipAtPoint(pickupClip, transform.position);
+		if (pickupClip != null) AudioOneShot.Play(pickupClip, transform.position);
 
 		if (respawnTime > 0f) StartRespawn();
 		else Destroy(gameObject);

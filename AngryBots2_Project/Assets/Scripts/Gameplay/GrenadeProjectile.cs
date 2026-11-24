@@ -52,7 +52,7 @@ public class GrenadeProjectile : MonoBehaviour
 		if (explosionPrefab != null)
 			VfxPool.Spawn(explosionPrefab, transform.position, Quaternion.identity);
 		if (explosionClip != null)
-			AudioSource.PlayClipAtPoint(explosionClip, transform.position);
+			AudioOneShot.Play(explosionClip, transform.position);
 
 		foreach (var health in FindObjectsOfType<EnemyHealth>())
 		{

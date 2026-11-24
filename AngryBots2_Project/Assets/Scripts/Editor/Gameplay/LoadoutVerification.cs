@@ -51,6 +51,16 @@ namespace ABGameplay
 				Ok(weapons.sniperPierce >= 1, "狙击穿透数 = " + weapons.sniperPierce);
 				Ok(weapons.sniperCriticalMultiplier > 1f, "狙击爆头倍率 = " + weapons.sniperCriticalMultiplier);
 
+				// 枪口 / 命中特效按武器区分
+				Ok(weapons.MuzzleFlashScale(WeaponSystem.WeaponMode.Sniper) > weapons.MuzzleFlashScale(WeaponSystem.WeaponMode.Rifle),
+					"狙击枪口特效更大 = " + weapons.MuzzleFlashScale(WeaponSystem.WeaponMode.Sniper));
+				Ok(weapons.MuzzleFlashScale(WeaponSystem.WeaponMode.Launcher) > weapons.MuzzleFlashScale(WeaponSystem.WeaponMode.Sniper),
+					"榴弹枪口特效最大 = " + weapons.MuzzleFlashScale(WeaponSystem.WeaponMode.Launcher));
+				Ok(weapons.MuzzleFlashScale(WeaponSystem.WeaponMode.SMG) < 1f,
+					"SMG 枪口特效更小 = " + weapons.MuzzleFlashScale(WeaponSystem.WeaponMode.SMG));
+				Ok(weapons.ImpactScale(WeaponSystem.WeaponMode.Sniper) > 1f,
+					"狙击命中特效放大 = " + weapons.ImpactScale(WeaponSystem.WeaponMode.Sniper));
+
 				// 爆头纯函数
 				Ok(ProjectileBehaviour.ApplyCritical(90, 1.5f, 1.0f, 0.35f, 2f) == 180, "爆头伤害翻倍 = 180");
 				Ok(ProjectileBehaviour.ApplyCritical(90, 1.2f, 1.0f, 0.35f, 2f) == 90, "未达高度阈值不翻倍");

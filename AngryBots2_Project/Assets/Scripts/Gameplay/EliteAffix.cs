@@ -131,6 +131,8 @@ public sealed class EliteAffixHost : MonoBehaviour
 	}
 
 	/// <summary>按词缀给敌人染一层色（自爆=橙、迅捷=黄、铁壁=蓝），便于一眼分辨。</summary>
+	/// <remarks>用 MaterialPropertyBlock 而不是 renderer.material：不会为每个精英克隆材质，
+	/// 保留 SRP Batcher 合批，也不会泄漏材质实例。</remarks>
 	void ApplyTint()
 	{
 		Color tint;
@@ -142,25 +144,56 @@ public sealed class EliteAffixHost : MonoBehaviour
 			default: return;
 		}
 
+		var block = GetBlock();
+		block.Clear();
+		block.SetColor("_BaseColor", tint);
+		block.SetColor("_Color", tint);
+		block.SetColor("_EmissionColor", tint * 0.45f);
+
 		foreach (var renderer in GetComponentsInChildren<Renderer>(true))
 		{
 			if (renderer == null) continue;
-
-			var material = renderer.material;
-			if (material == null) continue;
-
-			if (material.HasProperty("_BaseColor"))
-			{
-				var baseColor = material.GetColor("_BaseColor");
-				material.SetColor("_BaseColor", Color.Lerp(baseColor, tint, 0.55f));
-			}
-
-			if (material.HasProperty("_EmissionColor"))
-			{
-				material.EnableKeyword("_EMISSION");
-				material.SetColor("_EmissionColor", tint * 0.6f);
-			}
+			renderer.SetPropertyBlock(block);
 		}
+
+		EnsureAuraLight(tint);
+	}
+
+	// MaterialPropertyBlock 不能在 MonoBehaviour 的字段初始化里 new（Unity 禁止构造期创建原生对象），
+	// 这里按需惰性创建，且所有精英共用一份。
+	static MaterialPropertyBlock sharedBlock;
+
+	static MaterialPropertyBlock GetBlock()
+	{
+		if (sharedBlock == null) sharedBlock = new MaterialPropertyBlock();
+		return sharedBlock;
+	}
+
+	/// <summary>词缀光环：一盏无阴影的小点光，让精英在暗场里一眼可见（每只精英仅一盏）。</summary>
+	void EnsureAuraLight(Color tint)
+	{
+		var existing = transform.Find("AffixAura");
+		Light light;
+		if (existing == null)
+		{
+			var go = new GameObject("AffixAura");
+			go.transform.SetParent(transform, false);
+			go.transform.localPosition = Vector3.up * 0.8f;
+
+			light = go.AddComponent<Light>();
+			light.type = LightType.Point;
+			light.range = 3.5f;
+			light.intensity = 1.1f;
+			light.shadows = LightShadows.None;
+			light.renderMode = LightRenderMode.ForceVertex;
+		}
+		else
+		{
+			light = existing.GetComponent<Light>();
+			if (light == null) light = existing.gameObject.AddComponent<Light>();
+		}
+
+		light.color = tint;
 	}
 
 	bool applied;
@@ -182,11 +215,26 @@ public sealed class EliteAffixHost : MonoBehaviour
 		if (explosionPrefab != null)
 			VfxPool.Spawn(explosionPrefab, center, Quaternion.identity);
 
-		var player = Object.FindObjectOfType<PlayerHealth>();
+		var player = ResolvePlayerHealth();
 		if (player == null || player.IsDead) return;
 
 		float distance = Vector3.Distance(player.transform.position, center);
 		int damage = ExplosionDamage(explosionDamage, distance, explosionRadius);
 		if (damage > 0) player.TakeDamage(damage);
+	}
+
+	/// <summary>缓存玩家血量组件，避免每次自爆都走一遍 FindObjectOfType。</summary>
+	static PlayerHealth cachedPlayerHealth;
+
+	static PlayerHealth ResolvePlayerHealth()
+	{
+		if (cachedPlayerHealth != null) return cachedPlayerHealth;
+
+		var locator = PlayerLocator.Instance;
+		if (locator != null && locator.playerRoot != null)
+			cachedPlayerHealth = locator.playerRoot.GetComponent<PlayerHealth>();
+
+		if (cachedPlayerHealth == null) cachedPlayerHealth = Object.FindObjectOfType<PlayerHealth>();
+		return cachedPlayerHealth;
 	}
 }

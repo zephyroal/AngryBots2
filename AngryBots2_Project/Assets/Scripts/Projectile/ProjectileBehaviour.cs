@@ -38,6 +38,9 @@ public class ProjectileBehaviour : MonoBehaviour {
 	[Tooltip("爆头判定：命中点高出敌人包围盒中心多少米算爆头。")]
 	public float criticalHeight = 0.35f;
 
+	[Tooltip("命中特效的缩放（狙击等重武器更大）。")]
+	public float impactScale = 1f;
+
 	readonly System.Collections.Generic.HashSet<int> hitEnemies = new System.Collections.Generic.HashSet<int>();
 
 	/// <summary>爆头伤害计算（纯函数，便于自检）。</summary>
@@ -93,7 +96,7 @@ public class ProjectileBehaviour : MonoBehaviour {
 
 			if (EnemyHit != null) EnemyHit(transform.position);
 
-			VfxPool.Spawn(hitEnemyParticles, transform.position, transform.rotation);
+			VfxPool.Spawn(hitEnemyParticles, transform.position, transform.rotation, null, impactScale);
 
 			// 还有穿透次数就继续飞
 			if (pierceRemaining > 0)
