@@ -12,7 +12,10 @@ Shader "AngryBots/Particle/Additive"
         Tags { "RenderType"="Transparent" "Queue"="Transparent" "IgnoreProjector"="True" }
         Cull Off
         ZWrite Off
-        Blend One One
+        // 与 Unity 原生 Particles/Additive 一致：用纹理 alpha 调制加法贡献。
+        // 不能写成 Blend One One —— 辉光贴图在完全透明处仍带亮 RGB（如 Glow_05 边缘 240），
+        // 那样会把整块矩形都加进画面，表现为爆炸/枪口外圈出现硬边框。
+        Blend SrcAlpha One
 
         Pass
         {
