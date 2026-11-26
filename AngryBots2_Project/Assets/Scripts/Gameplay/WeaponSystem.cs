@@ -305,6 +305,30 @@ public class WeaponSystem : MonoBehaviour
 		}
 	}
 
+	/// <summary>开火镜头抖动的强度（重武器更强，SMG 最轻）。</summary>
+	public float ShakeStrength(WeaponMode mode)
+	{
+		switch (mode)
+		{
+			case WeaponMode.Shotgun: return 0.35f;
+			case WeaponMode.SMG: return 0.12f;
+			case WeaponMode.Sniper: return 0.55f;
+			case WeaponMode.Launcher: return 0.6f;
+			default: return 0.18f;
+		}
+	}
+
+	/// <summary>开火镜头抖动的时长（秒）。</summary>
+	public float ShakeDuration(WeaponMode mode)
+	{
+		switch (mode)
+		{
+			case WeaponMode.Sniper:
+			case WeaponMode.Launcher: return 0.18f;
+			default: return 0.1f;
+		}
+	}
+
 	/// <summary>
 	/// 逐发重播枪口特效。粒子系统已经在播放时 <c>Play()</c> 是空操作，
 	/// 连发（SMG 0.07s）会因此漏闪，所以每次先清空再播放。
@@ -430,6 +454,7 @@ public class WeaponSystem : MonoBehaviour
 		}
 
 		PlayMuzzleFlash();
+		CameraShake.Shake(ShakeStrength(Mode), ShakeDuration(Mode));
 		if (fireAudio != null) fireAudio.Play();
 		RaiseAmmoChanged();
 

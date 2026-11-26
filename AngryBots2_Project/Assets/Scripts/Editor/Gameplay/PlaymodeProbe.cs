@@ -15,6 +15,7 @@ namespace ABGameplay
 	{
 		const string ScenePath = "Assets/Scenes/Scenes/_CompletedLevel.unity";
 		const float TimeoutSeconds = 40f;
+		const string SessionKey = "ABGameplay.PlaymodeProbe.Active";
 
 		static readonly StringBuilder Report = new StringBuilder();
 		static int failures;
@@ -36,9 +37,21 @@ namespace ABGameplay
 
 		public static void Run()
 		{
+			// 进入 Play 模式会触发 domain reload，静态字段与 EditorApplication.update 订阅都会被清空，
+			// 所以用 SessionState 记一个标记，重载后由 ResumeAfterDomainReload 重新接上。
+			SessionState.SetBool(SessionKey, true);
 			EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+			EditorApplication.update -= Tick;
 			EditorApplication.update += Tick;
 			EditorApplication.EnterPlaymode();
+		}
+
+		[InitializeOnLoadMethod]
+		static void ResumeAfterDomainReload()
+		{
+			if (!SessionState.GetBool(SessionKey, false)) return;
+			EditorApplication.update -= Tick;
+			EditorApplication.update += Tick;
 		}
 
 		static void Tick()
@@ -117,6 +130,7 @@ namespace ABGameplay
 			{
 				Expect(hud.healthText != null && hud.healthText.text.Contains(playerHealth.CurrentHealth.ToString()),
 					"HUD 血量文本已同步（" + (hud.healthText != null ? hud.healthText.text : "null") + "）");
+				Expect(hud.HasPlayerBinding, "GameHud 已绑定玩家（血量 / 武器 / 增益）");
 			}
 		}
 
@@ -126,11 +140,24 @@ namespace ABGameplay
 			{
 				int before = playerHealth.CurrentHealth;
 				playerHealth.TakeDamage(20);
-				Expect(playerHealth.CurrentHealth == before - 20,
-					"受伤扣血 " + before + " -> " + playerHealth.CurrentHealth);
+				bool damaged = playerHealth.CurrentHealth == before - 20;
+				Expect(damaged, "受伤扣血 " + before + " -> " + playerHealth.CurrentHealth);
 				if (hud != null && hud.healthText != null)
 					Expect(hud.healthText.text.StartsWith(playerHealth.CurrentHealth.ToString()),
 						"HUD 血量跟随刷新（" + hud.healthText.text + "）");
+
+				// 打击感：受伤同时触发镜头抖动与屏幕边缘暗角（两者都是运行期自建，不依赖场景配置）
+				if (damaged)
+				{
+					if (hud != null)
+					{
+						Expect(hud.damageVignette != null, "HUD 受伤暗角 Image 已自动创建");
+						if (hud.damageVignette != null)
+							Expect(hud.VignetteAlpha > 0.05f,
+								"受伤后暗角强度 = " + hud.VignetteAlpha.ToString("0.00"));
+					}
+					Expect(CameraShake.Instance != null, "受伤后相机自动挂上 CameraShake");
+				}
 			}
 
 			if (weapons != null)
@@ -171,11 +198,22 @@ namespace ABGameplay
 			Expect(director.Wave > waveBefore, "清波后进入下一波（" + waveBefore + " -> " + director.Wave + "）");
 			var enemies = Object.FindObjectsOfType<EnemyHealth>();
 			Expect(enemies.Length > 0, "下一波敌人已生成（" + enemies.Length + "）");
+
+			// 渲染回调真的执行过（URP 下用 begin/endCameraRendering，仅靠 OnPreCull 会失效）
+			var shake = CameraShake.Instance;
+			if (shake != null)
+			{
+				Expect(shake.AppliedCount > 0, "渲染期抖动已实际施加 " + shake.AppliedCount + " 次");
+				Expect(shake.LastAppliedOffset.sqrMagnitude > 0f,
+					"抖动偏移量非零（" + shake.LastAppliedOffset.magnitude.ToString("0.000") + "m）");
+				Expect(!shake.OffsetPending, "抖动偏移已在渲染后还原（相机无残留位移）");
+			}
 		}
 
 		static void Finish()
 		{
 			EditorApplication.update -= Tick;
+			SessionState.SetBool(SessionKey, false);
 			Report.AppendLine(failures == 0 ? "RESULT: PASS" : "RESULT: FAIL (" + failures + ")");
 			Debug.Log("[ABGameplay][PlaymodeProbe]\n" + Report);
 

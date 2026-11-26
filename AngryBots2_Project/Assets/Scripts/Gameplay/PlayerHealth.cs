@@ -65,6 +65,7 @@ public class PlayerHealth : MonoBehaviour
 		invulnerableUntil = Time.time + invulnerabilityTime;
 		CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
 		RaiseHealthChanged();
+		CameraShake.Shake(0.3f, 0.18f);
 		if (Damaged != null) Damaged();
 
 		if (CurrentHealth <= 0) Die();

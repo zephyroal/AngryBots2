@@ -26,6 +26,9 @@ public class GameHud : MonoBehaviour
 	public Image damageFlash;
 	public Text hintText;
 
+	[Tooltip("屏幕边缘暗角，运行时自动创建（径向渐变），无需在场景里配置。")]
+	public Image damageVignette;
+
 	[Header("Combat Feedback")]
 	public Image[] hitMarkerParts;
 	public Text waveBanner;
@@ -37,6 +40,12 @@ public class GameHud : MonoBehaviour
 	public int HitFlashCount { get; private set; }
 	public int KillFlashCount { get; private set; }
 
+	/// <summary>当前暗角强度 0~1（自检用；Image 颜色要到下一帧 Update 才同步）。</summary>
+	public float VignetteAlpha { get { return vignetteAlpha; } }
+
+	/// <summary>HUD 是否已经绑定到玩家（自检用）。</summary>
+	public bool HasPlayerBinding { get { return playerHealth != null; } }
+
 	PlayerHealth playerHealth;
 	WeaponSystem weapons;
 	WaveDirector director;
@@ -44,7 +53,15 @@ public class GameHud : MonoBehaviour
 	readonly System.Text.StringBuilder powerUpBuilder = new System.Text.StringBuilder(64);
 	float powerUpRefreshTimer;
 
+	static readonly Color DamageVignetteColor = new Color(0.85f, 0.06f, 0.04f);
+	static readonly Color KillVignetteColor = new Color(1f, 0.6f, 0.22f);
+	const float VignetteDamagePeak = 1f;
+	const float VignetteKillPeak = 0.45f;
+
 	float flashAlpha;
+	float vignetteAlpha;
+	Color vignetteColor = DamageVignetteColor;
+
 	float hitMarkerAlpha;
 	float bannerAlpha;
 	Color hitMarkerColor = Color.white;
@@ -53,39 +70,19 @@ public class GameHud : MonoBehaviour
 	int lastAlive = -1;
 	int lastCountdown = -2;
 	float hintClearAt;
+	float bindRetryTimer;
+	GameObject playerRoot;
 
 	void Start()
 	{
 		EnsureFillSprite();
 		EnsurePowerUpText();
+		EnsureDamageVignette();
 
-		var player = GameObject.FindGameObjectWithTag("Player");
-		if (player != null)
-		{
-			playerHealth = player.GetComponent<PlayerHealth>();
-			weapons = player.GetComponent<WeaponSystem>();
-			powerUps = player.GetComponent<PowerUpSystem>();
-			if (powerUps != null)
-			{
-				powerUps.Activated += OnPowerUpActivated;
-				powerUps.Expired += OnPowerUpExpired;
-			}
-		}
+		var player = ResolvePlayer();
+		if (player != null) BindPlayer(player);
 
 		director = FindObjectOfType<WaveDirector>();
-
-		if (playerHealth != null)
-		{
-			playerHealth.HealthChanged += OnHealthChanged;
-			playerHealth.Damaged += OnDamaged;
-			OnHealthChanged(playerHealth.CurrentHealth, playerHealth.MaxHealth);
-		}
-
-		if (weapons != null)
-		{
-			weapons.AmmoChanged += OnAmmoChanged;
-			OnAmmoChanged();
-		}
 
 		if (director != null)
 		{
@@ -104,6 +101,73 @@ public class GameHud : MonoBehaviour
 
 		SetHitMarkerAlpha(0f);
 		if (waveBanner != null) waveBanner.color = new Color(1f, 0.9f, 0.55f, 0f);
+	}
+
+	static GameObject ResolvePlayer()
+	{
+		var player = GameObject.FindGameObjectWithTag("Player");
+		if (player != null) return player;
+
+		var health = Object.FindObjectOfType<PlayerHealth>();
+		return health != null ? health.gameObject : null;
+	}
+
+	/// <summary>
+	/// 绑定到玩家身上的组件。玩家可能比 HUD 晚激活，或玩法接线把 PlayerHealth / WeaponSystem
+	/// 换成了适配子类（旧引用会被销毁），所以这里允许重复调用、按需重订阅。
+	/// </summary>
+	void BindPlayer(GameObject player)
+	{
+		playerRoot = player;
+
+		var health = player.GetComponent<PlayerHealth>();
+		if (health != null && health != playerHealth)
+		{
+			if (playerHealth != null)
+			{
+				playerHealth.HealthChanged -= OnHealthChanged;
+				playerHealth.Damaged -= OnDamaged;
+			}
+			playerHealth = health;
+			playerHealth.HealthChanged += OnHealthChanged;
+			playerHealth.Damaged += OnDamaged;
+			OnHealthChanged(playerHealth.CurrentHealth, playerHealth.MaxHealth);
+		}
+
+		var newWeapons = player.GetComponent<WeaponSystem>();
+		if (newWeapons != null && newWeapons != weapons)
+		{
+			if (weapons != null) weapons.AmmoChanged -= OnAmmoChanged;
+			weapons = newWeapons;
+			weapons.AmmoChanged += OnAmmoChanged;
+			OnAmmoChanged();
+		}
+
+		var newPowerUps = player.GetComponent<PowerUpSystem>();
+		if (newPowerUps != null && newPowerUps != powerUps)
+		{
+			if (powerUps != null)
+			{
+				powerUps.Activated -= OnPowerUpActivated;
+				powerUps.Expired -= OnPowerUpExpired;
+			}
+			powerUps = newPowerUps;
+			powerUps.Activated += OnPowerUpActivated;
+			powerUps.Expired += OnPowerUpExpired;
+		}
+	}
+
+	/// <summary>玩家晚于 HUD 就绪、或玩法接线替换了组件时，每 0.5s 重试一次绑定。</summary>
+	void EnsurePlayerBound()
+	{
+		if (playerHealth != null && weapons != null && powerUps != null) return;
+
+		bindRetryTimer -= Time.unscaledDeltaTime;
+		if (bindRetryTimer > 0f) return;
+		bindRetryTimer = 0.5f;
+
+		if (playerRoot == null) playerRoot = ResolvePlayer();
+		if (playerRoot != null) BindPlayer(playerRoot);
 	}
 
 	/// <summary>老场景的 HUD 是在编辑器里装配的，没有增益文本时运行期自动补一个，避免要重跑装配脚本。</summary>
@@ -135,6 +199,70 @@ public class GameHud : MonoBehaviour
 		text.color = new Color(0.55f, 0.95f, 1f);
 		text.raycastTarget = false;
 		powerUpText = text;
+	}
+
+	/// <summary>
+	/// 屏幕边缘暗角：一张径向渐变（中心全透明、四角不透明）的全屏 Image，
+	/// 用 Image.color.a 控制强度。运行时自建，避免依赖编辑器装配。
+	/// </summary>
+	void EnsureDamageVignette()
+	{
+		if (damageVignette != null) return;
+
+		var canvas = GetComponentInParent<Canvas>();
+		if (canvas == null) canvas = FindObjectOfType<Canvas>();
+		if (canvas == null) return;
+
+		var go = new GameObject("DamageVignette", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+		go.transform.SetParent(canvas.transform, false);
+
+		var rect = go.GetComponent<RectTransform>();
+		rect.anchorMin = Vector2.zero;
+		rect.anchorMax = Vector2.one;
+		rect.pivot = new Vector2(0.5f, 0.5f);
+		rect.offsetMin = Vector2.zero;
+		rect.offsetMax = Vector2.zero;
+
+		var image = go.GetComponent<Image>();
+		image.sprite = CreateVignetteSprite(128);
+		image.type = Image.Type.Simple;
+		image.preserveAspect = false;
+		image.raycastTarget = false;
+		image.color = new Color(vignetteColor.r, vignetteColor.g, vignetteColor.b, 0f);
+		damageVignette = image;
+	}
+
+	/// <summary>暗角透明度：中心 0 → 四角 1（纯函数，便于自检）。normalizedRadius 1 = 画面四角。</summary>
+	public static float VignetteAlphaAt(float normalizedRadius)
+	{
+		return Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.42f, 1f, Mathf.Clamp01(normalizedRadius)));
+	}
+
+	static Sprite CreateVignetteSprite(int size)
+	{
+		var texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+		texture.name = "HudDamageVignette";
+		texture.wrapMode = TextureWrapMode.Clamp;
+		texture.filterMode = FilterMode.Bilinear;
+
+		var pixels = new Color32[size * size];
+		const float diag = 1.41421356f; // 归一化后中心到四角的距离
+		for (int y = 0; y < size; y++)
+		{
+			float dy = ((y + 0.5f) / size * 2f - 1f) / diag;
+			for (int x = 0; x < size; x++)
+			{
+				float dx = ((x + 0.5f) / size * 2f - 1f) / diag;
+				float radius = Mathf.Sqrt(dx * dx + dy * dy);
+				byte a = (byte)Mathf.RoundToInt(VignetteAlphaAt(radius) * 255f);
+				pixels[y * size + x] = new Color32(255, 255, 255, a);
+			}
+		}
+
+		texture.SetPixels32(pixels);
+		texture.Apply(false, true);
+
+		return Sprite.Create(texture, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f));
 	}
 
 	void EnsureFillSprite()	{
@@ -178,10 +306,18 @@ public class GameHud : MonoBehaviour
 
 	void Update()
 	{
+		EnsurePlayerBound();
+
 		if (damageFlash != null && flashAlpha > 0f)
 		{
 			flashAlpha = Mathf.Max(0f, flashAlpha - Time.deltaTime * 2.2f);
 			damageFlash.color = new Color(1f, 0.1f, 0.05f, flashAlpha * 0.45f);
+		}
+
+		if (damageVignette != null && vignetteAlpha > 0f)
+		{
+			vignetteAlpha = Mathf.Max(0f, vignetteAlpha - Time.deltaTime * 2f);
+			damageVignette.color = new Color(vignetteColor.r, vignetteColor.g, vignetteColor.b, vignetteAlpha * 0.7f);
 		}
 
 		if (hitMarkerAlpha > 0f)
@@ -317,6 +453,8 @@ public class GameHud : MonoBehaviour
 	void OnDamaged()
 	{
 		flashAlpha = 1f;
+		vignetteColor = DamageVignetteColor;
+		vignetteAlpha = VignetteDamagePeak;
 	}
 
 	void OnAmmoChanged()
@@ -365,6 +503,13 @@ public class GameHud : MonoBehaviour
 		hitMarkerColor = new Color(1f, 0.45f, 0.2f);
 		hitMarkerAlpha = 1f;
 		SetHitMarkerAlpha(1f);
+
+		// 击杀只给一圈较弱的暖色暗角；受伤的红色更强时保持原色，避免被冲淡。
+		if (vignetteAlpha < VignetteKillPeak)
+		{
+			vignetteColor = KillVignetteColor;
+			vignetteAlpha = VignetteKillPeak;
+		}
 	}
 
 	void SetHitMarkerAlpha(float alpha)

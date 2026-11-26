@@ -61,6 +61,24 @@ namespace ABGameplay
 				Ok(weapons.ImpactScale(WeaponSystem.WeaponMode.Sniper) > 1f,
 					"狙击命中特效放大 = " + weapons.ImpactScale(WeaponSystem.WeaponMode.Sniper));
 
+				// 开火镜头抖动按武器区分，强度随时长线性衰减
+				Ok(weapons.ShakeStrength(WeaponSystem.WeaponMode.Sniper) > weapons.ShakeStrength(WeaponSystem.WeaponMode.Rifle),
+					"狙击抖动强于步枪 = " + weapons.ShakeStrength(WeaponSystem.WeaponMode.Sniper) + " vs " + weapons.ShakeStrength(WeaponSystem.WeaponMode.Rifle));
+				Ok(weapons.ShakeStrength(WeaponSystem.WeaponMode.Launcher) >= weapons.ShakeStrength(WeaponSystem.WeaponMode.Sniper),
+					"榴弹抖动最强 = " + weapons.ShakeStrength(WeaponSystem.WeaponMode.Launcher));
+				Ok(weapons.ShakeStrength(WeaponSystem.WeaponMode.SMG) < weapons.ShakeStrength(WeaponSystem.WeaponMode.Rifle),
+					"SMG 抖动最轻 = " + weapons.ShakeStrength(WeaponSystem.WeaponMode.SMG));
+				Ok(CameraShake.PowerAt(1f, 1f) > CameraShake.PowerAt(1f, 0.5f),
+					"抖动强度随时间衰减（1.0 > " + CameraShake.PowerAt(1f, 0.5f).ToString("0.00") + "）");
+				Ok(CameraShake.PowerAt(1f, 0f) == 0f && CameraShake.PowerAt(0f, 1f) == 0f,
+					"抖动结束或零强度时不产生位移");
+
+				// 受伤暗角：径向渐变中心透明、四角不透明
+				Ok(GameHud.VignetteAlphaAt(1f) > GameHud.VignetteAlphaAt(0f),
+					"暗角四角 " + GameHud.VignetteAlphaAt(1f).ToString("0.00") + " > 中心 " + GameHud.VignetteAlphaAt(0f).ToString("0.00"));
+				Ok(GameHud.VignetteAlphaAt(0f) < 0.01f, "暗角中心保持透明");
+				Ok(GameHud.VignetteAlphaAt(1f) > 0.99f, "暗角四角完全不透明");
+
 				// 爆头纯函数
 				Ok(ProjectileBehaviour.ApplyCritical(90, 1.5f, 1.0f, 0.35f, 2f) == 180, "爆头伤害翻倍 = 180");
 				Ok(ProjectileBehaviour.ApplyCritical(90, 1.2f, 1.0f, 0.35f, 2f) == 90, "未达高度阈值不翻倍");

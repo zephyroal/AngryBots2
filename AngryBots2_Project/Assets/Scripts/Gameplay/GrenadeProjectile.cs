@@ -53,6 +53,7 @@ public class GrenadeProjectile : MonoBehaviour
 			VfxPool.Spawn(explosionPrefab, transform.position, Quaternion.identity);
 		if (explosionClip != null)
 			AudioOneShot.Play(explosionClip, transform.position);
+		CameraShake.Shake(0.6f, 0.3f);
 
 		foreach (var health in FindObjectsOfType<EnemyHealth>())
 		{
